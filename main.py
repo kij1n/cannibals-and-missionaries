@@ -3,7 +3,10 @@ from model import Model
 from view import View
 
 def main():
-    pass
+    model = Model()
+    view = View()
+    game = Controller(model, view)
+    game.run()
 
 if __name__ == "__main__":
     main()
