@@ -12,6 +12,9 @@ class GameState:
         self.collisions = CollisionManager()
         self.entities = EntityManager()
 
+    def check_win_lose(self):
+        return None
+
 class CollisionManager:
     pass
 
@@ -42,23 +45,28 @@ class Entity:
 class MenuState:
     def __init__(self):
         self.buttons = {
-
+            "pause_resume": self.create_button("Resume", True, 0),
+            "pause_quit": self.create_button("Quit", True, 1),
+            "pause_rules": self.create_button("Rules", True, 2),
+            "menu_start": self.create_button("Start", False, 0),
+            "menu_rules": self.create_button("Rules", False, 1),
+            "menu_quit": self.create_button("Quit", False, 2),
         }
 
     @staticmethod
     def create_button(text, is_pause, multiplier):
-        distance = settings.BUTTON_WIDTH + settings.DIST_BETWEEN_BUTTONS
-        if is_pause:
+        distance = settings.BUTTON_HEIGHT + settings.DIST_BETWEEN_BUTTONS
+        if not is_pause:
             start_pos = (
-                settings.MENU_BUTTON_START_POS_X +
-                distance * multiplier,
-                settings.MENU_BUTTON_START_POS_X
+                settings.MENU_BUTTON_START_POS_X,
+                settings.MENU_BUTTON_START_POS_Y +
+                distance * multiplier
             )
         else:
             start_pos = (
-                settings.PAUSE_BUTTON_START_POS_X +
-                distance * multiplier,
-                settings.PAUSE_BUTTON_START_POS_Y
+                settings.PAUSE_BUTTON_START_POS_X,
+                settings.PAUSE_BUTTON_START_POS_Y +
+                distance * multiplier
             )
         return Button(
             start_pos,

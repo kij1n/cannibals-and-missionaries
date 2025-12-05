@@ -4,24 +4,109 @@ import settings
 class View:
     def __init__(self):
         pygame.init()
-        self.main_view = MainView()
-        self.menu_renderer = MenuRenderer()
-        self.game_renderer = GameRenderer()
-        self.sprite_loader = SpriteLoader()
-        self.font = pygame.font.Font(settings.FONT, settings.FONT_SIZE)
-
-class MainView:
-    def __init__(self):
         self.screen = pygame.display.set_mode(
             settings.SIZE
         )
         pygame.display.set_caption(settings.SCREEN_TITLE)
 
+        self.menu_renderer = MenuRenderer()
+        self.game_renderer = GameRenderer()
+        self.sprite_loader = SpriteLoader()
+        self.font = pygame.font.Font(settings.FONT, settings.FONT_SIZE)
+
+    def render(self, game_state, menu_state, action, end=None):
+        self.render_background()
+        self.game_renderer.render(game_state)
+
+        if action == "menu":
+            self.render_dim()
+            self.screen = self.menu_renderer.render_menu(
+                menu_state,
+                self.screen,
+                self.font
+            )
+        elif action == "pause":
+            self.render_dim()
+            self.screen = self.menu_renderer.render_pause(
+                menu_state,
+                self.screen,
+                self.font
+            )
+        elif end is not None:
+            self.render_end(end)
+
+        self.flip()
+
+    def render_dim(self):
+        dim_overlay = pygame.Surface(settings.SIZE)
+        dim_overlay.fill("black")
+        dim_overlay.set_alpha(settings.SCREEN_DIM)
+        self.screen.blit(dim_overlay, (0, 0))
+
+    def render_end(self, end: str):
+        self.render_dim()
+
+        text = None
+        if end == "win":
+            text = settings.GAME_WIN
+        elif end == "lose":
+            text = settings.GAME_LOSE
+
+        self.display_text(
+            text,
+            settings.GAME_END_POS,
+            settings.TEXT_COLOR,
+            settings.GAME_END_FONT_SIZE,
+            settings.GAME_END_FONT
+        )
+
+    def render_background(self):
+        self.screen.blit(
+            self.sprite_loader.sprites["BACKGROUND1"],
+            (0, 0)
+        )
+
+    @staticmethod
+    def flip():
+        """
+        Flip the display with the pygame display flip method.
+        :return: None
+        """
+        pygame.display.flip()
+
+    def display_text(self, text, pos, color, size, font):
+        py_font = pygame.font.Font(font, size)
+        text_surface = py_font.render(text, True, color, size)
+        text_box = text_surface.get_rect(center=pos)
+        self.screen.blit(text_surface, text_box)
+
+
 class MenuRenderer:
-    pass
+    def render_menu(self, menu_state, screen, font: pygame.font.Font):
+        screen = self.show_button(menu_state.buttons["menu_start"], font, screen)
+        screen = self.show_button(menu_state.buttons["menu_rules"], font, screen)
+        screen = self.show_button(menu_state.buttons["menu_quit"], font, screen)
+        return screen
+
+    def render_pause(self, menu_state, screen, font: pygame.font.Font):
+        screen = self.show_button(menu_state.buttons["pause_resume"], font, screen)
+        screen = self.show_button(menu_state.buttons["pause_quit"], font, screen)
+        screen = self.show_button(menu_state.buttons["pause_rules"], font, screen)
+        return screen
+
+    @staticmethod
+    def show_button(btn, button_font, screen):
+        pygame.draw.rect(screen, btn.color, btn.get_dimensions())
+
+        text_surface = button_font.render(btn.text, False, btn.text_color)
+        text_box = text_surface.get_rect()
+        text_box.center = btn.get_center()
+        screen.blit(text_surface, text_box)
+        return screen
 
 class GameRenderer:
-    pass
+    def render(self, game_state):
+        pass
 
 class SpriteLoader:
     def __init__(self):
@@ -38,10 +123,11 @@ class SpriteLoader:
                 "boat"
             )
 
-        self.sprites["background"] = self.load_sprite(
-            settings.BACKGROUND_PATH,
-            "background"
-        )
+        for name in settings.BACKGROUND_PATH.keys():
+            self.sprites[name] = self.load_sprite(
+                settings.BACKGROUND_PATH[name],
+                "background"
+            )
 
     @staticmethod
     def load_sprite(path, sprite_type):
