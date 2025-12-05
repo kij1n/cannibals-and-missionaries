@@ -1,3 +1,6 @@
+import pygame
+import settings
+
 class View:
     pass
 
