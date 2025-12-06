@@ -15,8 +15,19 @@ class GameState:
     def check_win_lose(self):
         return None
 
+
 class CollisionManager:
-    pass
+    @staticmethod
+    def get_hovered_button(menu_state, mouse_pos, action):
+        for key, value in menu_state.buttons.items():
+            if value.rect.collidepoint(mouse_pos) and action == "menu"\
+                    and key in ["menu_start", "menu_rules", "menu_quit"]:
+                return key
+            elif value.rect.collidepoint(mouse_pos) and action == "pause"\
+                    and key in ["pause_resume", "pause_quit", "pause_rules"]:
+                return key
+        return None
+
 
 class EntityManager:
     def __init__(self):
@@ -46,12 +57,19 @@ class MenuState:
     def __init__(self):
         self.buttons = {
             "pause_resume": self.create_button("Resume", True, 0),
-            "pause_quit": self.create_button("Quit", True, 1),
-            "pause_rules": self.create_button("Rules", True, 2),
+            "pause_quit": self.create_button("Quit", True, 2),
+            "pause_rules": self.create_button("Rules", True, 1),
             "menu_start": self.create_button("Start", False, 0),
             "menu_rules": self.create_button("Rules", False, 1),
             "menu_quit": self.create_button("Quit", False, 2),
         }
+
+    def set_button_color(self, button_name, is_hover):
+        for key, value in self.buttons.items():
+            if key == button_name:
+                value.set_hover_color(is_hover)
+            else:
+                value.set_hover_color(False)
 
     @staticmethod
     def create_button(text, is_pause, multiplier):

@@ -23,14 +23,25 @@ class View:
             self.screen = self.menu_renderer.render_menu(
                 menu_state,
                 self.screen,
-                self.font
+                pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
             )
         elif action == "pause":
             self.render_dim()
             self.screen = self.menu_renderer.render_pause(
                 menu_state,
                 self.screen,
-                self.font
+                pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
+            )
+        elif action == "rules":
+            self.render_dim()
+            self.screen = self.menu_renderer.render_rules(
+                self.screen,
+                settings.RULES_START_POS,
+                settings.TEXT_COLOR,
+                settings.RULES_FONT_SIZE,
+                settings.RULES_FONT,
+                settings.RULES_TEXT_HEIGHT,
+                settings.RULES_TEXT_SPACING
             )
         elif end is not None:
             self.render_end(end)
@@ -76,7 +87,7 @@ class View:
 
     def display_text(self, text, pos, color, size, font):
         py_font = pygame.font.Font(font, size)
-        text_surface = py_font.render(text, True, color, size)
+        text_surface = py_font.render(text, True, color)
         text_box = text_surface.get_rect(center=pos)
         self.screen.blit(text_surface, text_box)
 
@@ -92,6 +103,18 @@ class MenuRenderer:
         screen = self.show_button(menu_state.buttons["pause_resume"], font, screen)
         screen = self.show_button(menu_state.buttons["pause_quit"], font, screen)
         screen = self.show_button(menu_state.buttons["pause_rules"], font, screen)
+        return screen
+
+    @staticmethod
+    def render_rules(screen, pos, color, size, font, text_height, text_spacing):
+        py_font = pygame.font.Font(font, size)
+        multiplier = 1
+        for line in settings.RULES:
+            text_surface = py_font.render(line, True, color)
+            text_box = text_surface.get_rect(center=(pos[0], pos[1] + text_height*multiplier + text_spacing*multiplier))
+            screen.blit(text_surface, text_box)
+            multiplier += 1
+
         return screen
 
     @staticmethod

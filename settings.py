@@ -45,13 +45,35 @@ ENTITY_SPRITE_SCALE = (80, 150)
 BOAT_SPRITE_SCALE = (200, 100)
 BACKGROUND_SPRITE_SCALE = SIZE
 
+# rules
+RULES = ["Lorem ipsum dolor sit amet, consectetur adipiscing ",
+         "elit. In blandit at erat sed varius. Nunc dolor nunc, ",
+         "posuere et massa et, venenatis pellentesque libero. ",
+         "In hac habitasse platea dictumst. Curabitur id nisi ",
+         "vitae augue accumsan ultrices. Morbi convallis velit ",
+         "non nisi congue, eget ultricies massa molestie. Aliquam ",
+         "convallis tellus risus, nec pellentesque ex tempor in. ",
+         "Aenean ipsum metus, lobortis ac elementum nec, semper ",
+         "eu magna. Nunc eu tellus ut nisl lacinia consequat ut ",
+         "ac urna. Sed convallis vel sem id fermentum. Curabitur ",
+         "fermentum maximus tortor sed sagittis. Donec at feugiat ",
+         "nunc. Sed ut vulputate leo. Nunc quam diam, commodo at ",
+         "ex non, tempor aliquam tortor."]
+RULES_START_POS = (SIZE[0] / 2, SIZE[1] / 3)
+RULES_FONT_SIZE = 30
+RULES_FONT = "Poppins-Light.ttf"
+RULES_TEXT_SPACING = 20
+RULES_TEXT_HEIGHT = 10
+
+
 # button constants
 BUTTON_HEIGHT = 75
 BUTTON_WIDTH = 175
-BUTTON_COLOR = (255, 255, 255)
+BUTTON_COLOR = (58, 58, 59)
 BUTTON_HOVER_COLOR = (61, 61, 61)
-BUTTON_TEXT_COLOR = (0, 0, 0)
-BUTTON_FONT_SIZE = 15
+BUTTON_TEXT_COLOR = "white"
+BUTTON_FONT = "Poppins-Light.ttf"
+BUTTON_FONT_SIZE = 30
 DIST_BETWEEN_BUTTONS = 10
 
 PAUSE_BUTTON_START_POS_X = SIZE[0] / 2 - BUTTON_WIDTH / 2

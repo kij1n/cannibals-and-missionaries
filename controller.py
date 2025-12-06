@@ -13,15 +13,60 @@ class Controller:
 
         self.fps = pygame.time.Clock()
 
-    def event_handler(self):
+    def event_handler(self, button=None, action=None):
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if self.action == "menu":
+                        self.quit()
+                    elif self.action == "pause":
+                        self.resume()
+                    else:
+                        self.pause()
+
             if event.type == pygame.QUIT:
                 self.running = False
+
+            if (event.type == pygame.MOUSEBUTTONUP and
+                    button is not None):
+                if event.button == 1 and button == "menu_start":
+                    self.play()
+                elif event.button == 1 and button == "menu_rules":
+                    self.rules()
+                elif event.button == 1 and button == "menu_quit":
+                    self.quit()
+                elif event.button == 1 and button == "pause_resume":
+                    self.resume()
+                elif event.button == 1 and button == "pause_rules":
+                    self.rules()
+                elif event.button == 1 and button == "pause_quit":
+                    self.quit()
+
+    def play(self):
+        self.action = "listen"
+
+    def rules(self):
+        self.action = "rules"
+
+    def quit(self):
+        self.running = False
+
+    def resume(self):
+        self.action = "listen"
+
+    def pause(self):
+        self.action = "pause"
 
     def input_handler(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            self.action = "pause"
+            if self.action == "menu":
+                self.quit()
+            elif self.action == "pause":
+                print("pause")
+                self.resume()
+            else:
+                self.pause()
 
 
     def run(self):
@@ -38,15 +83,30 @@ class Controller:
                 win
             )
 
-            if self.action == "menu":
-                pass
-            elif self.action == "pause":
-                pass
-            elif self.action == "listen":
-                pass
-            elif self.action == "ferry":
-                pass
+            if self.action == "menu" or self.action == "pause":
+                hovered_button = self.model.game_state.collisions.get_hovered_button(
+                    self.model.menu_state,
+                    pygame.mouse.get_pos(),
+                    self.action
+                )
+                if hovered_button is not None:
+                    self.model.menu_state.set_button_color(hovered_button, True)
 
-            print("test")
-            self.event_handler()
+                self.event_handler(hovered_button, self.action)
+                self.input_handler()
+
+            elif self.action == "rules":
+                self.event_handler(None, self.action)
+                self.input_handler()
+
+            elif self.action == "listen":
+                self.event_handler(None, self.action)
+                self.input_handler()
+
+            elif self.action == "ferry":
+                self.event_handler(None, self.action)
+                self.input_handler()
+
+            # self.event_handler()
+            # self.input_handler()
             self.fps.tick(settings.FRAMERATE)
