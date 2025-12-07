@@ -35,14 +35,18 @@ class CollisionManager:
                 return key
         return None
 
+    @staticmethod
+    def get_hovered_entity(entities, mouse_pos, sprite_loader):
+        for name in entities.ents.keys():
+            hitbox = entities.get_hitbox(name, sprite_loader)
+            if hitbox.collidepoint(mouse_pos):
+                return name
+        return None
+
+
 
 class EntityManager:
     def __init__(self):
-        # self.cannibals = {
-        #     "cannibal1": self.add_entity("cannibal", "cannibal1"),
-        #     "cannibal2": self.add_entity("cannibal", "cannibal2"),
-        #     "cannibal3": self.add_entity("cannibal", "cannibal3")
-        # }
         self.ents = {
             "cannibal1": self.add_entity("cannibal", "cannibal1"),
             "cannibal2": self.add_entity("cannibal", "cannibal2"),
@@ -51,6 +55,28 @@ class EntityManager:
             "missionary2": self.add_entity("missionary", "missionary2"),
             "missionary3": self.add_entity("missionary", "missionary3")
         }
+        self.boat = Boat(settings.BOAT_LEFT_POS)
+
+    def set_hovering(self, ent_name):
+        for name, obj in self.ents.items():
+            if name == ent_name:
+                obj.hovered_over = True
+            else:
+                obj.hovered_over = False
+
+    def get_hitbox(self, ent_name, sprite_loader):
+        return sprite_loader.sprites[self.ents[ent_name].sprite_name[0]].get_rect()
+
+    def move_entity_to_boat(self, entity_name):
+        self.boat.held_entities.append(entity_name)
+        self.ents[entity_name].on_boat = True
+
+    def move_boat(self):
+        pass
+
+    def remove_entity_from_boat(self, entity_name):
+        self.boat.held_entities.remove(entity_name)
+        self.ents[entity_name].on_boat = False
 
     @staticmethod
     def add_entity(type_of_entity, name):
@@ -66,6 +92,14 @@ class EntityManager:
         )
         return entity
 
+class Boat:
+    def __init__(self, pos):
+        self.pos = pos
+        self.held_entities = []
+        self.which_shore = "left" # holds entity names on the boat
+        self.speed = settings.BOAT_SPEED
+        self.sprite_name = ["BOAT_1"]
+
 class Entity:
     def __init__(self, name, type_of_entity, on_boat, pos=None):
         self.name = name
@@ -73,9 +107,8 @@ class Entity:
         self.pos = pos
         self.sprite_name = []
         self.on_boat = on_boat
-        if type_of_entity == "boat":
-            self.sprite_name = ["BOAT_1"]
-        elif type_of_entity == "cannibal":
+        self.hovered_over = False
+        if type_of_entity == "cannibal":
             self.sprite_name = ["CANNIBAL"]
         elif type_of_entity == "missionary":
             self.sprite_name = ["MISSIONARY"]

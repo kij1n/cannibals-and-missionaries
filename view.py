@@ -16,25 +16,26 @@ class View:
 
     def render(self, game_state, menu_state, action, end=None):
         self.render_background()
-        self.screen = self.game_renderer.render(game_state, self.screen, self.sprite_loader)
 
         if action == "menu":
             self.render_dim()
-            self.screen = self.menu_renderer.render_menu(
+            self.menu_renderer.render_menu(
                 menu_state,
                 self.screen,
                 pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
             )
-        elif action == "pause":
-            self.render_dim()
-            self.screen = self.menu_renderer.render_pause(
-                menu_state,
-                self.screen,
-                pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
-            )
+        elif action == "listen" or action == "ferry" or action == "pause":
+            self.game_renderer.render(game_state, self.screen, self.sprite_loader)
+            if action == "pause":
+                self.render_dim()
+                self.screen = self.menu_renderer.render_pause(
+                    menu_state,
+                    self.screen,
+                    pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
+                )
         elif action == "rules":
             self.render_dim()
-            self.screen = self.menu_renderer.render_rules(
+            self.menu_renderer.render_rules(
                 self.screen,
                 settings.RULES_START_POS,
                 settings.TEXT_COLOR,
@@ -130,23 +131,39 @@ class MenuRenderer:
 class GameRenderer:
     def render(self, game_state, screen, sprite_loader):
         #render left side
+        self.render_side("left", game_state.left_side, screen, sprite_loader, game_state)
+
+        #render right side
+        self.render_side("right", game_state.right_side, screen, sprite_loader, game_state)
+
+        #render boat
+        self.render_boat(game_state.entities.boat, screen, sprite_loader)
+
+        return screen
+
+    @staticmethod
+    def render_boat(boat, screen, sprite_loader):
+        screen.blit(sprite_loader.sprites[boat.sprite_name[0]], boat.pos)
+
+    @staticmethod
+    def render_side(side, entity_side_list, screen, sprite_loader, game_state):
+        positions = None
+        if side == "left":
+            positions = settings.ENTITY_LEFT_POSITIONS
+        else:
+            positions = settings.ENTITY_RIGHT_POSITIONS
+
         index = 0
-        for entity_name in game_state.left_side:
+        for entity_name in entity_side_list:
             entity = game_state.entities.ents[entity_name]
             if not entity.on_boat:
                 screen.blit(
                     sprite_loader.sprites[
                         game_state.entities.ents[entity.name].sprite_name[0]
                     ],
-                    settings.ENTITY_LEFT_POSITIONS[index]
+                    positions[index]
                 )
             index += 1
-
-        #render right side
-
-        #render boat
-
-        return screen
 
 class SpriteLoader:
     def __init__(self):

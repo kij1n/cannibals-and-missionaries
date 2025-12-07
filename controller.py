@@ -60,19 +60,6 @@ class Controller:
     def pause(self):
         self.action = "pause"
 
-    def input_handler(self):
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_ESCAPE]:
-        #     if self.action == "menu":
-        #         self.quit()
-        #     elif self.action == "pause":
-        #         print("pause")
-        #         self.resume()
-        #     else:
-        #         self.pause()
-        pass
-
-
     def run(self):
         self.running = True
         self.action = "menu"
@@ -97,20 +84,21 @@ class Controller:
                     self.model.menu_state.set_button_color(hovered_button, True)
 
                 self.event_handler(hovered_button, self.action)
-                self.input_handler()
 
             elif self.action == "rules":
                 self.event_handler(None, self.action)
-                self.input_handler()
 
             elif self.action == "listen":
+                hovered_entity = self.model.game_state.collisions.get_hovered_entity(
+                    self.model.game_state.entities,
+                    pygame.mouse.get_pos(),
+                    self.view.sprite_loader
+                )
+                self.model.game_state.entities.set_hovering(hovered_entity)
+                
                 self.event_handler(None, self.action)
-                self.input_handler()
 
             elif self.action == "ferry":
                 self.event_handler(None, self.action)
-                self.input_handler()
 
-            # self.event_handler()
-            # self.input_handler()
             self.fps.tick(settings.FRAMERATE)
