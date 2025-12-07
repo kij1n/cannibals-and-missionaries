@@ -13,7 +13,7 @@ class Controller:
 
         self.fps = pygame.time.Clock()
 
-    def event_handler(self, button=None, action=None):
+    def event_handler(self, button=None, hovered_entity=None):
         for event in pygame.event.get():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
@@ -90,13 +90,14 @@ class Controller:
 
             elif self.action == "listen":
                 hovered_entity = self.model.game_state.collisions.get_hovered_entity(
-                    self.model.game_state.entities,
+                    self.model.game_state,
                     pygame.mouse.get_pos(),
                     self.view.sprite_loader
                 )
+                print(hovered_entity)
                 self.model.game_state.entities.set_hovering(hovered_entity)
                 
-                self.event_handler(None, self.action)
+                self.event_handler(None, hovered_entity)
 
             elif self.action == "ferry":
                 self.event_handler(None, self.action)

@@ -137,16 +137,21 @@ class GameRenderer:
         self.render_side("right", game_state.right_side, screen, sprite_loader, game_state)
 
         #render boat
-        self.render_boat(game_state.entities.boat, screen, sprite_loader)
+        self.render_boat(game_state.entities.boat, screen, sprite_loader, game_state)
 
         return screen
 
-    @staticmethod
-    def render_boat(boat, screen, sprite_loader):
-        screen.blit(sprite_loader.sprites[boat.sprite_name[0]], boat.pos)
+    def render_boat(self, boat, screen, sprite_loader, game_state):
+        entities_on_boat = boat.held_entities
+        positions = [
+            settings.BOAT_ENTITY_LEFT_POS, settings.BOAT_ENTITY_RIGHT_POS
+        ]
+        index = 0
+        for entity_name in entities_on_boat:
+            self.render_entity(game_state.entities.ents[entity_name], screen, sprite_loader, positions, index)
+            index += 1
 
-    @staticmethod
-    def render_side(side, entity_side_list, screen, sprite_loader, game_state):
+    def render_side(self, side, entity_side_list, screen, sprite_loader, game_state):
         positions = None
         if side == "left":
             positions = settings.ENTITY_LEFT_POSITIONS
@@ -157,13 +162,19 @@ class GameRenderer:
         for entity_name in entity_side_list:
             entity = game_state.entities.ents[entity_name]
             if not entity.on_boat:
-                screen.blit(
-                    sprite_loader.sprites[
-                        game_state.entities.ents[entity.name].sprite_name[0]
-                    ],
-                    positions[index]
-                )
+                self.render_entity(entity, screen, sprite_loader, positions, index)
+
             index += 1
+
+    @staticmethod
+    def render_entity(entity, screen, sprite_loader, positions, index):
+        image = sprite_loader.sprites[
+            entity.sprite_name[0]
+        ]
+        screen.blit(
+            image,
+            positions[index]
+        )
 
 class SpriteLoader:
     def __init__(self):

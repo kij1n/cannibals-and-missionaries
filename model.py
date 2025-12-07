@@ -15,9 +15,7 @@ class GameState:
             "cannibal1", "cannibal2", "cannibal3",
             "missionary1", "missionary2", "missionary3"
         ] # holds missionaries and cannibals on the left side
-        self.right_side = [
-
-        ]
+        self.right_side = []
 
     def check_win_lose(self):
         return None
@@ -35,15 +33,46 @@ class CollisionManager:
                 return key
         return None
 
-    @staticmethod
-    def get_hovered_entity(entities, mouse_pos, sprite_loader):
-        for name in entities.ents.keys():
-            hitbox = entities.get_hitbox(name, sprite_loader)
-            if hitbox.collidepoint(mouse_pos):
-                return name
+    def get_hovered_entity(self, game_state, mouse_pos, sprite_loader):
+        # check left side positions
+        find = self.check_for_hover(
+            game_state.left_side, game_state.entities,
+            settings.ENTITY_LEFT_POSITIONS,
+            mouse_pos, sprite_loader
+            )
+        if find is not None:
+            return find
+
+        # check right side positions
+        find = self.check_for_hover(
+            game_state.right_side, game_state.entities,
+            settings.ENTITY_RIGHT_POSITIONS,
+            mouse_pos, sprite_loader
+        )
+        if find is not None:
+            return find
+
+        # check entities currently on the boat
+        boat_pos = game_state.entities.boat.pos
+        for name, ent in game_state.entities.ents.items():
+            if ent.on_boat:
+                image = sprite_loader.sprites[ent.sprite_name[0]]
+                rect = image.get_rect(topleft=boat_pos)
+                rect.scale_by_ip(settings.HITBOX_SCALE)
+                if rect.collidepoint(mouse_pos):
+                    return name
+
         return None
 
-
+    @staticmethod
+    def check_for_hover(side, entities, positions, mouse_pos, sprite_loader):
+        for i, name in enumerate(side):
+            image = sprite_loader.sprites[entities.ents[name].sprite_name[0]]
+            rect = image.get_rect(topleft=positions[i])
+            rect.scale_by_ip(settings.HITBOX_SCALE)
+            if rect.collidepoint(mouse_pos):
+                return name
+        return None
 
 class EntityManager:
     def __init__(self):
@@ -92,6 +121,7 @@ class EntityManager:
         )
         return entity
 
+
 class Boat:
     def __init__(self, pos):
         self.pos = pos
@@ -99,6 +129,7 @@ class Boat:
         self.which_shore = "left" # holds entity names on the boat
         self.speed = settings.BOAT_SPEED
         self.sprite_name = ["BOAT_1"]
+
 
 class Entity:
     def __init__(self, name, type_of_entity, on_boat, pos=None):
