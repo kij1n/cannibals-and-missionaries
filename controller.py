@@ -29,9 +29,6 @@ class Controller:
 
             if (event.type == pygame.MOUSEBUTTONUP and
                     button is not None):
-                # if event.button == 1:
-                #     print(pygame.mouse.get_pos())
-
                 if event.button == 1 and button == "menu_start":
                     self.play()
                 elif event.button == 1 and button == "menu_rules":
@@ -44,6 +41,17 @@ class Controller:
                     self.rules()
                 elif event.button == 1 and button == "pause_quit":
                     self.quit()
+
+            if (event.type == pygame.MOUSEBUTTONUP and
+                    button is None and
+                    hovered_entity is not None and
+                    self.action == "listen"):
+                if hovered_entity == "boat":
+                    pass
+                elif event.button == 1:
+                    self.model.game_state.entities.move_entity_to_boat(
+                        hovered_entity
+                    )
 
     def play(self):
         self.action = "listen"
@@ -95,7 +103,7 @@ class Controller:
                     self.view.sprite_loader
                 )
                 print(hovered_entity)
-                self.model.game_state.entities.set_hovering(hovered_entity)
+                # self.model.game_state.entities.set_hovering(hovered_entity)
                 
                 self.event_handler(None, hovered_entity)
 

@@ -142,6 +142,10 @@ class GameRenderer:
         return screen
 
     def render_boat(self, boat, screen, sprite_loader, game_state):
+        self.render_entity(
+            game_state.entities.boat, screen, sprite_loader,
+            [game_state.entities.boat.pos], 0
+        )
         entities_on_boat = boat.held_entities
         positions = [
             settings.BOAT_ENTITY_LEFT_POS, settings.BOAT_ENTITY_RIGHT_POS
@@ -163,8 +167,9 @@ class GameRenderer:
             entity = game_state.entities.ents[entity_name]
             if not entity.on_boat:
                 self.render_entity(entity, screen, sprite_loader, positions, index)
+                index += 1
 
-            index += 1
+
 
     @staticmethod
     def render_entity(entity, screen, sprite_loader, positions, index):
