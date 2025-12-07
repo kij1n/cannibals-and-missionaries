@@ -11,6 +11,8 @@ class GameState:
     def __init__(self):
         self.collisions = CollisionManager()
         self.entities = EntityManager()
+        self.side_left = [] # holds missionaries and cannibals on the left side
+        self.side_right = []
 
     def check_win_lose(self):
         return None
@@ -32,26 +34,27 @@ class CollisionManager:
 class EntityManager:
     def __init__(self):
         self.cannibals = {
-            "cannibal1": self.add_entity("cannibal"),
-            "cannibal2": self.add_entity("cannibal"),
-            "cannibal3": self.add_entity("cannibal")
+            "cannibal1": self.add_entity("cannibal", "cannibal1"),
+            "cannibal2": self.add_entity("cannibal", "cannibal2"),
+            "cannibal3": self.add_entity("cannibal", "cannibal3")
         }
         self.missionaries = {
-            "missionary1": self.add_entity("missionary"),
-            "missionary2": self.add_entity("missionary"),
-            "missionary3": self.add_entity("missionary")
+            "missionary1": self.add_entity("missionary", "missionary1"),
+            "missionary2": self.add_entity("missionary", "missionary2"),
+            "missionary3": self.add_entity("missionary", "missionary3")
         }
 
     @staticmethod
-    def add_entity(name):
+    def add_entity(type, name):
         entity = Entity(
             name
         )
         return entity
 
 class Entity:
-    def __init__(self, name):
+    def __init__(self, name, sprites: dict, pos=None):
         self.name = name
+
 
 class MenuState:
     def __init__(self):

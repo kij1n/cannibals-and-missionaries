@@ -15,7 +15,7 @@ class Controller:
 
     def event_handler(self, button=None, action=None):
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
                     if self.action == "menu":
                         self.quit()
@@ -58,15 +58,16 @@ class Controller:
         self.action = "pause"
 
     def input_handler(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
-            if self.action == "menu":
-                self.quit()
-            elif self.action == "pause":
-                print("pause")
-                self.resume()
-            else:
-                self.pause()
+        # keys = pygame.key.get_pressed()
+        # if keys[pygame.K_ESCAPE]:
+        #     if self.action == "menu":
+        #         self.quit()
+        #     elif self.action == "pause":
+        #         print("pause")
+        #         self.resume()
+        #     else:
+        #         self.pause()
+        pass
 
 
     def run(self):
