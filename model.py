@@ -38,23 +38,12 @@ class CollisionManager:
         for entity in game_state.entities.get_all_entities():
             if entity.on_boat:
                 boat_pos = game_state.entities.boat.get_position()
-                index = entity.index_boat_pos
                 rect = entity.get_hitbox(boat_pos)
             else:
                 rect = entity.get_hitbox()
             if rect.collidepoint(mouse_pos):
                 return entity.name
 
-        return None
-
-    @staticmethod
-    def check_for_hover(side, entities, positions, mouse_pos, sprite_loader):
-        for i, name in enumerate(side):
-            image = sprite_loader.sprites[entities.ents[name].sprite_name[0]]
-            rect = image.get_rect(topleft=positions[i])
-            rect.scale_by_ip(settings.HITBOX_SCALE)
-            if rect.collidepoint(mouse_pos):
-                return name
         return None
 
 class EntityManager:
@@ -157,8 +146,23 @@ class Entity:
         self.index_boat_pos = index
 
     def get_hitbox(self, boat_pos=None):
-        rect = pygame.Rect(self.get_position(boat_pos), settings.ENTITY_SPRITE_SCALE)
-        rect.scale_by_ip(settings.HITBOX_SCALE)
+        pos = self.get_position(boat_pos)
+        # pos = (
+        #     pos[0] * settings.HITBOX_SCALE,
+        #     pos[1] * settings.HITBOX_SCALE
+        # )
+
+        if self.on_boat:
+            size = settings.ENTITY_ON_BOAT_SCALE
+        else:
+            size = settings.ENTITY_SPRITE_SCALE
+
+        size = (
+            size[0] * settings.HITBOX_SCALE,
+            size[1] * settings.HITBOX_SCALE
+        )
+
+        rect = pygame.Rect(pos, size)
         return rect
 
 

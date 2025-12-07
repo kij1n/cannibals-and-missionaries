@@ -159,19 +159,21 @@ class GameRenderer:
 
 
     @staticmethod
-    def render_entity(entity, screen, sprite_loader, on_boat=False, index=None, boat_pos=None):
+    def render_entity(entity, screen, sprite_loader,on_boat=False, index=None, boat_pos=None):
         image = sprite_loader.sprites[
             entity.sprite_name[0]
         ]
         if not on_boat:
             screen.blit(
                 image,
-                entity.get_position()
+                entity.get_position(),
             )
         else:
+            rect = pygame.Rect((0, 0), settings.ENTITY_ON_BOAT_SCALE)
             screen.blit(
                 image,
-                settings.BOAT_ENTITY_POS(boat_pos, index)
+                settings.BOAT_ENTITY_POS(boat_pos, index),
+                area=rect
             )
 
 class SpriteLoader:
