@@ -11,8 +11,13 @@ class GameState:
     def __init__(self):
         self.collisions = CollisionManager()
         self.entities = EntityManager()
-        self.side_left = [] # holds missionaries and cannibals on the left side
-        self.side_right = []
+        self.left_side = [
+            "cannibal1", "cannibal2", "cannibal3",
+            "missionary1", "missionary2", "missionary3"
+        ] # holds missionaries and cannibals on the left side
+        self.right_side = [
+
+        ]
 
     def check_win_lose(self):
         return None
@@ -33,27 +38,47 @@ class CollisionManager:
 
 class EntityManager:
     def __init__(self):
-        self.cannibals = {
+        # self.cannibals = {
+        #     "cannibal1": self.add_entity("cannibal", "cannibal1"),
+        #     "cannibal2": self.add_entity("cannibal", "cannibal2"),
+        #     "cannibal3": self.add_entity("cannibal", "cannibal3")
+        # }
+        self.ents = {
             "cannibal1": self.add_entity("cannibal", "cannibal1"),
             "cannibal2": self.add_entity("cannibal", "cannibal2"),
-            "cannibal3": self.add_entity("cannibal", "cannibal3")
-        }
-        self.missionaries = {
+            "cannibal3": self.add_entity("cannibal", "cannibal3"),
             "missionary1": self.add_entity("missionary", "missionary1"),
             "missionary2": self.add_entity("missionary", "missionary2"),
             "missionary3": self.add_entity("missionary", "missionary3")
         }
 
     @staticmethod
-    def add_entity(type, name):
+    def add_entity(type_of_entity, name):
+        pos = None
+        if type_of_entity == "boat":
+            pos = settings.BOAT_LEFT_POS
+
         entity = Entity(
-            name
+            name,
+            type_of_entity,
+            False,
+            pos
         )
         return entity
 
 class Entity:
-    def __init__(self, name, sprites: dict, pos=None):
+    def __init__(self, name, type_of_entity, on_boat, pos=None):
         self.name = name
+        self.type = type_of_entity
+        self.pos = pos
+        self.sprite_name = []
+        self.on_boat = on_boat
+        if type_of_entity == "boat":
+            self.sprite_name = ["BOAT_1"]
+        elif type_of_entity == "cannibal":
+            self.sprite_name = ["CANNIBAL"]
+        elif type_of_entity == "missionary":
+            self.sprite_name = ["MISSIONARY"]
 
 
 class MenuState:

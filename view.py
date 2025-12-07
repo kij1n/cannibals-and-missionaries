@@ -16,7 +16,7 @@ class View:
 
     def render(self, game_state, menu_state, action, end=None):
         self.render_background()
-        self.game_renderer.render(game_state)
+        self.screen = self.game_renderer.render(game_state, self.screen, self.sprite_loader)
 
         if action == "menu":
             self.render_dim()
@@ -128,8 +128,25 @@ class MenuRenderer:
         return screen
 
 class GameRenderer:
-    def render(self, game_state):
-        pass
+    def render(self, game_state, screen, sprite_loader):
+        #render left side
+        index = 0
+        for entity_name in game_state.left_side:
+            entity = game_state.entities.ents[entity_name]
+            if not entity.on_boat:
+                screen.blit(
+                    sprite_loader.sprites[
+                        game_state.entities.ents[entity.name].sprite_name[0]
+                    ],
+                    settings.ENTITY_LEFT_POSITIONS[index]
+                )
+            index += 1
+
+        #render right side
+
+        #render boat
+
+        return screen
 
 class SpriteLoader:
     def __init__(self):

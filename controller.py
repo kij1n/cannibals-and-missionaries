@@ -29,6 +29,9 @@ class Controller:
 
             if (event.type == pygame.MOUSEBUTTONUP and
                     button is not None):
+                # if event.button == 1:
+                #     print(pygame.mouse.get_pos())
+
                 if event.button == 1 and button == "menu_start":
                     self.play()
                 elif event.button == 1 and button == "menu_rules":
