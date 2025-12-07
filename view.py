@@ -131,55 +131,48 @@ class MenuRenderer:
 class GameRenderer:
     def render(self, game_state, screen, sprite_loader):
         #render left side
-        self.render_side("left", game_state.left_side, screen, sprite_loader, game_state)
+        # self.render_side("left", game_state.left_side, screen, sprite_loader, game_state)
+        self.render_entities(game_state, screen, sprite_loader)
 
         #render right side
-        self.render_side("right", game_state.right_side, screen, sprite_loader, game_state)
+        # self.render_side("right", game_state.right_side, screen, sprite_loader, game_state)
 
         #render boat
         self.render_boat(game_state.entities.boat, screen, sprite_loader, game_state)
 
-        return screen
-
     def render_boat(self, boat, screen, sprite_loader, game_state):
         self.render_entity(
-            game_state.entities.boat, screen, sprite_loader,
-            [game_state.entities.boat.pos], 0
+            game_state.entities.boat, screen, sprite_loader
         )
-        entities_on_boat = boat.held_entities
-        positions = [
-            settings.BOAT_ENTITY_LEFT_POS, settings.BOAT_ENTITY_RIGHT_POS
-        ]
+        entities_on_boat = boat.get_held_entity_names()
         index = 0
-        for entity_name in entities_on_boat:
-            self.render_entity(game_state.entities.ents[entity_name], screen, sprite_loader, positions, index)
+        for name in entities_on_boat:
+            entity = game_state.entities.ents[name]
+            self.render_entity(entity, screen, sprite_loader, True, index, boat.get_position())
             index += 1
 
-    def render_side(self, side, entity_side_list, screen, sprite_loader, game_state):
-        positions = None
-        if side == "left":
-            positions = settings.ENTITY_LEFT_POSITIONS
-        else:
-            positions = settings.ENTITY_RIGHT_POSITIONS
-
-        index = 0
-        for entity_name in entity_side_list:
-            entity = game_state.entities.ents[entity_name]
-            if not entity.on_boat:
-                self.render_entity(entity, screen, sprite_loader, positions, index)
-                index += 1
-
+    def render_entities(self, game_state, screen, sprite_loader):
+        for entity in game_state.entities.ents.values():
+            if entity.on_boat:
+                continue
+            self.render_entity(entity, screen, sprite_loader)
 
 
     @staticmethod
-    def render_entity(entity, screen, sprite_loader, positions, index):
+    def render_entity(entity, screen, sprite_loader, on_boat=False, index=None, boat_pos=None):
         image = sprite_loader.sprites[
             entity.sprite_name[0]
         ]
-        screen.blit(
-            image,
-            positions[index]
-        )
+        if not on_boat:
+            screen.blit(
+                image,
+                entity.get_position()
+            )
+        else:
+            screen.blit(
+                image,
+                settings.BOAT_ENTITY_POS(boat_pos, index)
+            )
 
 class SpriteLoader:
     def __init__(self):

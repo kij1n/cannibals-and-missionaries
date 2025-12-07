@@ -33,34 +33,17 @@ class CollisionManager:
                 return key
         return None
 
-    def get_hovered_entity(self, game_state, mouse_pos, sprite_loader):
-        # check left side positions
-        find = self.check_for_hover(
-            game_state.left_side, game_state.entities,
-            settings.ENTITY_LEFT_POSITIONS,
-            mouse_pos, sprite_loader
-            )
-        if find is not None:
-            return find
-
-        # check right side positions
-        find = self.check_for_hover(
-            game_state.right_side, game_state.entities,
-            settings.ENTITY_RIGHT_POSITIONS,
-            mouse_pos, sprite_loader
-        )
-        if find is not None:
-            return find
-
-        # check entities currently on the boat
-        boat_pos = game_state.entities.boat.pos
-        for name, ent in game_state.entities.ents.items():
-            if ent.on_boat:
-                image = sprite_loader.sprites[ent.sprite_name[0]]
-                rect = image.get_rect(topleft=boat_pos)
-                rect.scale_by_ip(settings.HITBOX_SCALE)
-                if rect.collidepoint(mouse_pos):
-                    return name
+    @staticmethod
+    def get_hovered_entity(game_state, mouse_pos):
+        for entity in game_state.entities.get_all_entities():
+            if entity.on_boat:
+                boat_pos = game_state.entities.boat.get_position()
+                index = entity.index_boat_pos
+                rect = entity.get_hitbox(boat_pos)
+            else:
+                rect = entity.get_hitbox()
+            if rect.collidepoint(mouse_pos):
+                return entity.name
 
         return None
 
@@ -77,12 +60,12 @@ class CollisionManager:
 class EntityManager:
     def __init__(self):
         self.ents = {
-            "cannibal1": self.add_entity("cannibal", "cannibal1"),
-            "cannibal2": self.add_entity("cannibal", "cannibal2"),
-            "cannibal3": self.add_entity("cannibal", "cannibal3"),
-            "missionary1": self.add_entity("missionary", "missionary1"),
-            "missionary2": self.add_entity("missionary", "missionary2"),
-            "missionary3": self.add_entity("missionary", "missionary3")
+            "cannibal1": self.add_entity("cannibal", "cannibal1", 0),
+            "cannibal2": self.add_entity("cannibal", "cannibal2", 1),
+            "cannibal3": self.add_entity("cannibal", "cannibal3", 2),
+            "missionary1": self.add_entity("missionary", "missionary1", 3),
+            "missionary2": self.add_entity("missionary", "missionary2", 4),
+            "missionary3": self.add_entity("missionary", "missionary3", 5)
         }
         self.boat = Boat(settings.BOAT_LEFT_POS)
 
@@ -93,12 +76,9 @@ class EntityManager:
             else:
                 obj.hovered_over = False
 
-    def get_hitbox(self, ent_name, sprite_loader):
-        return sprite_loader.sprites[self.ents[ent_name].sprite_name[0]].get_rect()
-
     def move_entity_to_boat(self, entity_name):
         self.boat.held_entities.append(entity_name)
-        self.ents[entity_name].on_boat = True
+        self.ents[entity_name].move_to_boat(len(self.boat.held_entities) - 1)
 
     def move_boat(self):
         pass
@@ -107,17 +87,21 @@ class EntityManager:
         self.boat.held_entities.remove(entity_name)
         self.ents[entity_name].on_boat = False
 
-    @staticmethod
-    def add_entity(type_of_entity, name):
-        pos = None
-        if type_of_entity == "boat":
-            pos = settings.BOAT_LEFT_POS
+    def get_entities_on_boat(self):
+        return self.boat.held_entities
 
+    def get_all_entities(self):
+        items: list = list(self.ents.values())
+        items.append(self.boat)
+        return self.ents.values()
+
+    @staticmethod
+    def add_entity(type_of_entity, name, pos_index):
         entity = Entity(
             name,
             type_of_entity,
-            False,
-            pos
+            settings.ENTITY_LEFT_POSITIONS[pos_index],
+            settings.ENTITY_RIGHT_POSITIONS[pos_index]
         )
         return entity
 
@@ -130,19 +114,52 @@ class Boat:
         self.speed = settings.BOAT_SPEED
         self.sprite_name = ["BOAT_1"]
 
+    def get_entity_pos(self, index):
+        return settings.BOAT_ENTITY_POS(self.pos, index)
+
+    def get_held_entity_names(self):
+        return self.held_entities
+
+    def get_position(self):
+        return self.pos
+
 
 class Entity:
-    def __init__(self, name, type_of_entity, on_boat, pos=None):
+    def __init__(self, name, type_of_entity, left_shore_pos, right_shore_pos):
+        self.index_boat_pos = None
         self.name = name
         self.type = type_of_entity
-        self.pos = pos
+
         self.sprite_name = []
-        self.on_boat = on_boat
-        self.hovered_over = False
         if type_of_entity == "cannibal":
             self.sprite_name = ["CANNIBAL"]
         elif type_of_entity == "missionary":
             self.sprite_name = ["MISSIONARY"]
+
+        self.on_boat = False
+        self.hovered_over = False
+
+        self.which_shore = "left"
+        self.left_shore_pos = left_shore_pos
+        self.right_shore_pos = right_shore_pos
+
+    def get_position(self, boat_pos=None):
+        if self.which_shore == "left":
+            return self.left_shore_pos
+        elif self.which_shore == "right":
+            return self.right_shore_pos
+        else:
+            return settings.BOAT_ENTITY_POS(boat_pos, self.index_boat_pos)
+
+    def move_to_boat(self, index):
+        self.which_shore = None
+        self.on_boat = True
+        self.index_boat_pos = index
+
+    def get_hitbox(self, boat_pos=None):
+        rect = pygame.Rect(self.get_position(boat_pos), settings.ENTITY_SPRITE_SCALE)
+        rect.scale_by_ip(settings.HITBOX_SCALE)
+        return rect
 
 
 class MenuState:
