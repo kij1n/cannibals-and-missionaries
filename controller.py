@@ -51,8 +51,10 @@ class Controller:
                     button is None and
                     hovered_entity is not None and
                     self.action == "listen"):
-                if hovered_entity == "boat":
-                    pass
+                if event.button == 1 and hovered_entity == "boat":
+                    carried_entities = len(self.model.game_state.entities.boat.held_entities)
+                    if carried_entities != 0:
+                        self.move_ferry()
                 elif event.button == 1:
                     on_boat = self.model.game_state.entities.ents[hovered_entity].on_boat
                     if on_boat:
@@ -70,8 +72,20 @@ class Controller:
     def quit(self):
         self.running = False
 
+    def move_ferry(self):
+        self.action = "ferry"
+        side = self.model.game_state.entities.boat.which_shore
+        if side == "left":
+            side = "right"
+        else:
+            side = "left"
+        self.model.game_state.entities.start_ferry(side)
+
     def resume(self):
-        self.action = "listen"
+        if not self.model.game_state.entities.is_ferry_done():
+            self.action = "ferry"
+        else:
+            self.action = "listen"
 
     def pause(self):
         self.action = "pause"
@@ -110,11 +124,16 @@ class Controller:
                     pygame.mouse.get_pos()
                 )
 
-                print(hovered_entity)
+                # print(hovered_entity)
                 
                 self.event_handler(None, hovered_entity)
 
             elif self.action == "ferry":
+                arrived = self.model.game_state.entities.ferry()
+                if arrived:
+                    self.model.game_state.entities.stop_ferry()
+                    self.action = "listen"
+
                 self.event_handler(None, self.action)
 
 

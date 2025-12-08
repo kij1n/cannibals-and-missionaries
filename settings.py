@@ -52,9 +52,9 @@ HITBOX_SCALE = 0.7
 # boat settings
 BOAT_SPEED = 10
 BOAT_MOVE_LEFT = (-30, 0)
-BOAT_MOVE_RIGHT = (0, 0)
+BOAT_MOVE_RIGHT = (40, -30)
 BOAT_LEFT_POS = (527 + BOAT_MOVE_LEFT[0], 444 + BOAT_MOVE_LEFT[1])
-BOAT_RIGHT_POS = (975 + BOAT_MOVE_RIGHT[0], 444 + BOAT_MOVE_RIGHT[1])
+BOAT_RIGHT_POS = (850 + BOAT_MOVE_RIGHT[0], 444 + BOAT_MOVE_RIGHT[1])
 
 # rendering entities in the boat
 DIST_FROM_EDGE_OF_BOAT = 0
@@ -69,7 +69,7 @@ BOAT_ENTITY_POS = lambda boat_pos, index: (
 
 # entity rendering constants
 LEFT_MOVE = (-40, -100)
-RIGHT_MOVE = (0, 0)
+RIGHT_MOVE = (-50, -50)
 
 ENTITY_LEFT_POSITIONS = [
     (24 + LEFT_MOVE[0], 401 + LEFT_MOVE[1]), (70  + LEFT_MOVE[0], 511 + LEFT_MOVE[1]), (188  + LEFT_MOVE[0], 406 + LEFT_MOVE[1]),

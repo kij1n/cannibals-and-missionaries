@@ -130,12 +130,7 @@ class MenuRenderer:
 
 class GameRenderer:
     def render(self, game_state, screen, sprite_loader):
-        #render left side
-        # self.render_side("left", game_state.left_side, screen, sprite_loader, game_state)
         self.render_entities(game_state, screen, sprite_loader)
-
-        #render right side
-        # self.render_side("right", game_state.right_side, screen, sprite_loader, game_state)
 
         #render boat
         self.render_boat(game_state.entities.boat, screen, sprite_loader, game_state)
@@ -145,11 +140,9 @@ class GameRenderer:
             game_state.entities.boat, screen, sprite_loader
         )
         entities_on_boat = boat.get_held_entity_names()
-        index = 0
         for name in entities_on_boat:
             entity = game_state.entities.ents[name]
-            self.render_entity(entity, screen, sprite_loader, True, index, boat.get_position())
-            index += 1
+            self.render_entity(entity, screen, sprite_loader, True, entity.get_index_on_boat(), boat.get_position())
 
     def render_entities(self, game_state, screen, sprite_loader):
         for entity in game_state.entities.ents.values():
@@ -183,7 +176,6 @@ class GameRenderer:
         #     color = "red"
         #
         # hitbox_rect = pygame.Rect(entity.get_hitbox(boat_pos))
-        # hitbox_rect.scale_by_ip(settings.HITBOX_SCALE)
         # pygame.draw.rect(screen, color, hitbox_rect)
 
 

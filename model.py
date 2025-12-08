@@ -5,20 +5,76 @@ class Model:
     def __init__(self):
         self.game_state = GameState()
         self.menu_state = MenuState()
+        self.game_graph = self.get_game_graph()
+        print(self.game_graph)
 
+    def get_game_graph(self):
+        max_missionaries = 3
+        max_cannibals = 3
+        gamestate = (max_cannibals, max_missionaries, 0) # cannibals on the left, missionaries on the left, boat: 0: left 1: right
+        moves = [
+            (1, 0), (2, 0), # cannibals
+            (0, 1), (0, 2), # missionaries
+            (1, 1)
+        ]
+
+        graph = {}
+        for state in self.get_all_valid_states(max_missionaries, max_cannibals):
+            graph[state] = self.get_next_gamestates(state, moves)
+
+        return graph
+
+    @staticmethod
+    def get_next_gamestates(gamestate, moves):
+        cannibals, missionaries, boat = gamestate
+        direction = -1 if boat == 0 else 1
+        next_states = {}
+        for move in moves:
+            next_state = (
+                cannibals + move[0] * direction,
+                missionaries + move[1] * direction,
+                boat
+            )
+            next_states[move] = next_state
+        return next_states
+
+    def get_all_valid_states(self, max_missionaries, max_cannibals):
+        states = []
+        for missionary in range(max_missionaries):
+            for cannibal in range(max_cannibals):
+                for boat in [0, 1]:
+                    state = (cannibal, missionary, boat)
+                    if self.is_valid_gamestate(state):
+                        states.append(state)
+        return states
+
+    @staticmethod
+    def is_valid_gamestate(gamestate):
+        left_cannibals, left_missionaries, boat = gamestate
+        if left_cannibals < 0 or left_missionaries < 0:
+            return False
+
+        right_cannibals = 3 - left_cannibals
+        right_missionaries = 3 - left_missionaries
+        if right_cannibals < 0 or right_missionaries < 0:
+            return False
+
+        # Check left shore
+        if left_cannibals > left_missionaries > 0:
+            return False
+        if right_cannibals > right_missionaries > 0:
+            return False
+
+        return True
 
 class GameState:
     def __init__(self):
         self.collisions = CollisionManager()
         self.entities = EntityManager()
-        self.left_side = [
-            "cannibal1", "cannibal2", "cannibal3",
-            "missionary1", "missionary2", "missionary3"
-        ] # holds missionaries and cannibals on the left side
-        self.right_side = []
 
     def check_win_lose(self):
         return None
+
 
 
 class CollisionManager:
@@ -59,6 +115,42 @@ class EntityManager:
             "missionary3": self.add_entity("missionary", "missionary3", 5)
         }
         self.boat = Boat(settings.BOAT_LEFT_POS)
+        self.ferry_moving = None
+
+    def is_ferry_done(self):
+        return self.ferry_moving is None
+
+    def start_ferry(self, side):
+        self.ferry_moving = side
+
+    def stop_ferry(self):
+        self.boat.which_shore = self.ferry_moving
+        self.ferry_moving = None
+
+    def ferry(self):
+        boat_pos = self.boat.get_position()
+        if self.ferry_moving == "left":
+            if boat_pos[0] >= settings.BOAT_LEFT_POS[0]:
+                self.move_boat("left")
+                return False
+        else:
+            if boat_pos[0] <= settings.BOAT_RIGHT_POS[0]:
+                self.move_boat("right")
+                return False
+        # Arrived at the shore
+        return True
+
+    def move_boat(self, side):
+        if side == "left":
+            self.boat.pos = (
+                self.boat.pos[0] - self.boat.speed,
+                self.boat.pos[1]
+            )
+        else:
+            self.boat.pos = (
+                self.boat.pos[0] + self.boat.speed,
+                self.boat.pos[1]
+            )
 
     def set_hovering(self, ent_name):
         for name, obj in self.ents.items():
@@ -68,13 +160,17 @@ class EntityManager:
                 obj.hovered_over = False
 
     def move_entity_to_boat(self, entity_name):
-        if len(self.boat.held_entities) == 2:
+        held_entities = self.boat.held_entities
+        if len(held_entities) == 2:
             return  # Boat is full
-        self.boat.held_entities.append(entity_name)
-        self.ents[entity_name].move_to_boat(len(self.boat.held_entities) - 1)
+        if len(held_entities) == 1:
+            other_index = self.ents[held_entities[0]].get_index_on_boat()
+            self.boat.held_entities.append(entity_name)
+            self.ents[entity_name].move_to_boat(1-other_index)
 
-    def move_boat(self):
-        pass
+        if len(held_entities) == 0:
+            self.boat.held_entities.append(entity_name)
+            self.ents[entity_name].move_to_boat(0)
 
     def remove_entity_from_boat(self, entity_name):
         self.ents[entity_name].remove_from_boat(self.boat.which_shore)
@@ -159,6 +255,9 @@ class Entity:
         self.on_boat = False
         self.index_boat_pos = None
 
+    def get_index_on_boat(self):
+        return self.index_boat_pos
+
     def get_hitbox(self, boat_pos=None):
         pos = self.get_position(boat_pos)
 
@@ -167,17 +266,11 @@ class Entity:
         else:
             sprite_size = settings.ENTITY_SPRITE_SCALE
 
-        hitbox_size = (
-            sprite_size[0] * settings.HITBOX_SCALE,
-            sprite_size[1] * settings.HITBOX_SCALE
-        )
-
-        hitbox_pos = (
-            pos[0] + (sprite_size[0] - hitbox_size[0]) / 2,
-            pos[1] + (sprite_size[1] - hitbox_size[1]) / 2
-        )
+        hitbox_size = (sprite_size[0], sprite_size[1])
+        hitbox_pos = pos
 
         rect = pygame.Rect(hitbox_pos, hitbox_size)
+        rect.scale_by_ip(settings.HITBOX_SCALE)
         return rect
 
 
