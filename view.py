@@ -176,6 +176,17 @@ class GameRenderer:
                 area=rect
             )
 
+        # render hitboxes
+        # if entity.name == "boat":
+        #     color = "white"
+        # else:
+        #     color = "red"
+        #
+        # hitbox_rect = pygame.Rect(entity.get_hitbox(boat_pos))
+        # hitbox_rect.scale_by_ip(settings.HITBOX_SCALE)
+        # pygame.draw.rect(screen, color, hitbox_rect)
+
+
 class SpriteLoader:
     def __init__(self):
         self.sprites = {}

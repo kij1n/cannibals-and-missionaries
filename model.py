@@ -43,6 +43,8 @@ class CollisionManager:
                 rect = entity.get_hitbox()
             if rect.collidepoint(mouse_pos):
                 return entity.name
+        if game_state.entities.boat.get_hitbox(None).collidepoint(mouse_pos):
+            return "boat"
 
         return None
 
@@ -66,6 +68,8 @@ class EntityManager:
                 obj.hovered_over = False
 
     def move_entity_to_boat(self, entity_name):
+        if len(self.boat.held_entities) == 2:
+            return  # Boat is full
         self.boat.held_entities.append(entity_name)
         self.ents[entity_name].move_to_boat(len(self.boat.held_entities) - 1)
 
@@ -73,8 +77,8 @@ class EntityManager:
         pass
 
     def remove_entity_from_boat(self, entity_name):
+        self.ents[entity_name].remove_from_boat(self.boat.which_shore)
         self.boat.held_entities.remove(entity_name)
-        self.ents[entity_name].on_boat = False
 
     def get_entities_on_boat(self):
         return self.boat.held_entities
@@ -102,6 +106,7 @@ class Boat:
         self.which_shore = "left" # holds entity names on the boat
         self.speed = settings.BOAT_SPEED
         self.sprite_name = ["BOAT_1"]
+        self.name = "boat"
 
     def get_entity_pos(self, index):
         return settings.BOAT_ENTITY_POS(self.pos, index)
@@ -111,6 +116,10 @@ class Boat:
 
     def get_position(self):
         return self.pos
+
+    def get_hitbox(self, boat_pos=None):
+        rect = pygame.Rect(self.get_position(), settings.BOAT_SPRITE_SCALE)
+        return rect
 
 
 class Entity:
@@ -145,24 +154,30 @@ class Entity:
         self.on_boat = True
         self.index_boat_pos = index
 
+    def remove_from_boat(self, shore):
+        self.which_shore = shore
+        self.on_boat = False
+        self.index_boat_pos = None
+
     def get_hitbox(self, boat_pos=None):
         pos = self.get_position(boat_pos)
-        # pos = (
-        #     pos[0] * settings.HITBOX_SCALE,
-        #     pos[1] * settings.HITBOX_SCALE
-        # )
 
         if self.on_boat:
-            size = settings.ENTITY_ON_BOAT_SCALE
+            sprite_size = settings.ENTITY_ON_BOAT_SCALE
         else:
-            size = settings.ENTITY_SPRITE_SCALE
+            sprite_size = settings.ENTITY_SPRITE_SCALE
 
-        size = (
-            size[0] * settings.HITBOX_SCALE,
-            size[1] * settings.HITBOX_SCALE
+        hitbox_size = (
+            sprite_size[0] * settings.HITBOX_SCALE,
+            sprite_size[1] * settings.HITBOX_SCALE
         )
 
-        rect = pygame.Rect(pos, size)
+        hitbox_pos = (
+            pos[0] + (sprite_size[0] - hitbox_size[0]) / 2,
+            pos[1] + (sprite_size[1] - hitbox_size[1]) / 2
+        )
+
+        rect = pygame.Rect(hitbox_pos, hitbox_size)
         return rect
 
 

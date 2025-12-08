@@ -54,9 +54,11 @@ class Controller:
                 if hovered_entity == "boat":
                     pass
                 elif event.button == 1:
-                    self.model.game_state.entities.move_entity_to_boat(
-                        hovered_entity
-                    )
+                    on_boat = self.model.game_state.entities.ents[hovered_entity].on_boat
+                    if on_boat:
+                        self.model.game_state.entities.remove_entity_from_boat(hovered_entity)
+                    else:
+                        self.model.game_state.entities.move_entity_to_boat(hovered_entity)
 
     def play(self):
         self.action = "listen"
