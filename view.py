@@ -93,18 +93,6 @@ class View:
 
 
 class MenuRenderer:
-    # @staticmethod
-    # def render_win(result, screen, font):
-    #     if result == "win":
-    #         text = settings.GAME_WIN
-    #     else:
-    #         text = settings.GAME_LOSE
-    #     text_surface = font.render(text, False, settings.TEXT_COLOR)
-    #     text_box = text_surface.get_rect()
-    #     text_box.center = settings.GAME_END_POS
-    #     screen.blit(text_surface, text_box)
-    #     return screen
-
     def render_menu(self, menu_state, screen, font: pygame.font.Font):
         screen = self.show_button(menu_state.buttons["menu_start"], font, screen)
         screen = self.show_button(menu_state.buttons["menu_rules"], font, screen)
