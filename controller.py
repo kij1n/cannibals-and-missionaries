@@ -123,8 +123,6 @@ class Controller:
                     self.model.game_state,
                     pygame.mouse.get_pos()
                 )
-
-                # print(hovered_entity)
                 
                 self.event_handler(None, hovered_entity)
 
@@ -132,9 +130,18 @@ class Controller:
                 arrived = self.model.game_state.entities.ferry()
                 if arrived:
                     self.model.game_state.entities.stop_ferry()
-                    self.action = "listen"
+                    output = self.model.game_state.check_win_lose()
+                    if output == "pass":
+                        self.action = "listen"
+                    elif output == "win":
+                        self.action = "win"
+                    else:
+                        self.action = "lose"
 
                 self.event_handler(None, self.action)
-
+            elif self.action == "win":
+                pass
+            elif self.action == "lose":
+                pass
 
             self.fps.tick(settings.FRAMERATE)

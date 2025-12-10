@@ -5,7 +5,6 @@ class Model:
     def __init__(self):
         self.game_state = GameState()
         self.menu_state = MenuState()
-        self.game_graph = self.get_game_graph()
         # print(self.game_graph)
 
     def get_game_graph(self):
@@ -71,10 +70,91 @@ class GameState:
     def __init__(self):
         self.collisions = CollisionManager()
         self.entities = EntityManager()
+        self.gamestate = (3, 3, 0)
+        self.game_graph = self.get_game_graph()
 
     def check_win_lose(self):
-        return None
+        move = self.identify_move()
+        if move in self.game_graph[self.gamestate].keys():
+            self.append_gamestate(move)
+            if self.gamestate == (0, 0, 1):
+                return "win"
+            else:
+                return "pass"
+        return "lose"
 
+    def append_gamestate(self, move):
+        self.gamestate = self.game_graph[self.gamestate][move]
+
+    def identify_move(self):
+        held_entities = self.entities.get_entities_on_boat()
+        move = (0, 0)
+        for ent_name in held_entities:
+            if ent_name[0:-1] == "cannibal":
+                move = (move[0]+1, 0)
+            else:
+                move = (0, move[1]+1)
+        return move
+
+
+    def get_game_graph(self):
+        max_missionaries = 3
+        max_cannibals = 3
+        gamestate = (max_cannibals, max_missionaries, 0) # cannibals on the left, missionaries on the left, boat: 0: left 1: right
+        moves = [
+            (1, 0), (2, 0), # cannibals
+            (0, 1), (0, 2), # missionaries
+            (1, 1)
+        ]
+
+        graph = {}
+        for state in self.get_all_valid_states(max_missionaries, max_cannibals):
+            graph[state] = self.get_next_gamestates(state, moves)
+
+        return graph
+
+    def get_next_gamestates(self, gamestate, moves):
+        cannibals, missionaries, boat = gamestate
+        direction = -1 if boat == 0 else 1
+        next_states = {}
+        for move in moves:
+            next_state = (
+                cannibals + move[0] * direction,
+                missionaries + move[1] * direction,
+                1-boat
+            )
+            if self.is_valid_gamestate(next_state):
+                next_states[move] = next_state
+        return next_states
+
+    def get_all_valid_states(self, max_missionaries, max_cannibals):
+        states = []
+        for missionary in range(max_missionaries+1):
+            for cannibal in range(max_cannibals+1):
+                for boat in [0, 1]:
+                    state = (cannibal, missionary, boat)
+                    if self.is_valid_gamestate(state):
+                        states.append(state)
+        return states
+
+    @staticmethod
+    def is_valid_gamestate(gamestate):
+        left_cannibals, left_missionaries, boat = gamestate
+        if left_cannibals < 0 or left_missionaries < 0:
+            return False
+
+        right_cannibals = 3 - left_cannibals
+        right_missionaries = 3 - left_missionaries
+        if right_cannibals < 0 or right_missionaries < 0:
+            return False
+
+        # Check left shore
+        if left_cannibals > left_missionaries > 0:
+            return False
+        if right_cannibals > right_missionaries > 0:
+            return False
+
+        return True
 
 
 class CollisionManager:
