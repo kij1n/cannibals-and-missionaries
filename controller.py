@@ -152,7 +152,6 @@ class Controller:
             elif self.action == "win":
                 self.win()
             elif self.action == "lose":
-                # print("LOSE")
                 self.lose()
                 self.event_handler()
 

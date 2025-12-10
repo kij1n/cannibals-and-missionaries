@@ -16,9 +16,10 @@ class GameState:
 
     def lose(self):
         side = "left" if self.gamestate[2] == 0 else "right"
+        print(f"detected side loss {side}")
 
-        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and ent.which_shore == side]
-        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and ent.which_shore == side]
+        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
         assigned_missionaries = []
 
         for cannibal_name in cannibals:
@@ -64,9 +65,9 @@ class GameState:
         move = (0, 0)
         for ent_name in held_entities:
             if ent_name[0:-1] == "cannibal":
-                move = (move[0]+1, 0)
+                move = (move[0]+1, move[1])
             else:
-                move = (0, move[1]+1)
+                move = (move[0], move[1]+1)
         return move
 
 
