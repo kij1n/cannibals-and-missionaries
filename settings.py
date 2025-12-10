@@ -20,31 +20,17 @@ MOVES_MADE_FONT_SIZE = 20
 
 # sprites
 BACKGROUND_PATH = {
-    "BACKGROUND1": "images/background1.png",
-    "BACKGROUND2": "images/background2.png",
-    "BACKGROUND3": "images/background3.png",
-    "BACKGROUND4": "images/background4.png"
+    "BACKGROUND1": "images/background1.png"
 }
 
 BOAT_ASSET_PATHS = {
-    "BOAT_1": "images/boat/boat_pos1.png",
-    "BOAT_2": "images/boat/boat_pos2.png",
-    "BOAT_3": "images/boat/boat_pos3.png",
-    "BOAT_4": "images/boat/boat_pos4.png",
+    "BOAT_1": "images/boat/boat_pos1.png"
 }
 
 ENTITY_ASSET_PATHS = {
     "CANNIBAL": "images/cannibal/cannibal_standing.png",
     "CANNIBAL_MOUTH": "images/cannibal/cannibal_mouth-open.png",
-    "CANNIBAL_TURN_LEFT_1": "images/cannibal/cannibal_turn_left_1.png",
-    "CANNIBAL_TURN_LEFT_2": "images/cannibal/cannibal_turn_left_2.png",
-    "CANNIBAL_TURN_RIGHT_1": "images/cannibal/cannibal_turn_right_1.png",
-    "CANNIBAL_TURN_RIGHT_2": "images/cannibal/cannibal_turn_right_2.png",
-    "MISSIONARY": "images/missionary/missionary_standing.png",
-    "MISSIONARY_TURN_LEFT_1": "images/missionary/missionary_turn_left_1.png",
-    "MISSIONARY_TURN_LEFT_2": "images/missionary/missionary_turn_left_2.png",
-    "MISSIONARY_TURN_RIGHT_1": "images/missionary/missionary_turn_right_1.png",
-    "MISSIONARY_TURN_RIGHT_2": "images/missionary/missionary_turn_right_2.png"
+    "MISSIONARY": "images/missionary/missionary_standing.png"
 }
 
 # scaling for sprites
