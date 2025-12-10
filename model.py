@@ -6,7 +6,7 @@ class Model:
         self.game_state = GameState()
         self.menu_state = MenuState()
         self.game_graph = self.get_game_graph()
-        print(self.game_graph)
+        # print(self.game_graph)
 
     def get_game_graph(self):
         max_missionaries = 3
@@ -24,8 +24,7 @@ class Model:
 
         return graph
 
-    @staticmethod
-    def get_next_gamestates(gamestate, moves):
+    def get_next_gamestates(self, gamestate, moves):
         cannibals, missionaries, boat = gamestate
         direction = -1 if boat == 0 else 1
         next_states = {}
@@ -33,15 +32,16 @@ class Model:
             next_state = (
                 cannibals + move[0] * direction,
                 missionaries + move[1] * direction,
-                boat
+                1-boat
             )
-            next_states[move] = next_state
+            if self.is_valid_gamestate(next_state):
+                next_states[move] = next_state
         return next_states
 
     def get_all_valid_states(self, max_missionaries, max_cannibals):
         states = []
-        for missionary in range(max_missionaries):
-            for cannibal in range(max_cannibals):
+        for missionary in range(max_missionaries+1):
+            for cannibal in range(max_cannibals+1):
                 for boat in [0, 1]:
                     state = (cannibal, missionary, boat)
                     if self.is_valid_gamestate(state):
