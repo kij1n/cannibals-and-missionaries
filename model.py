@@ -1,6 +1,6 @@
 import pygame
 import settings
-from math import sin, cos, atan
+from math import sin, cos, atan, atan2
 
 class Model:
     def __init__(self):
@@ -15,11 +15,16 @@ class GameState:
         self.game_graph = self.get_game_graph()
 
     def lose(self):
-        side = "left" if self.gamestate[2] == 0 else "right"
-        print(f"detected side loss {side}")
+        side = "left"
+        # print(f"detected side loss {side}")
+        # print(f"gamestate: {self.gamestate}")
 
-        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
-        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        cannibals, missionaries = self.get_ent_on_shore(side)
+
+        if not self.were_rules_broken(cannibals, missionaries):
+            side = "right"
+            cannibals, missionaries = self.get_ent_on_shore(side)
+
         assigned_missionaries = []
 
         for cannibal_name in cannibals:
@@ -31,12 +36,12 @@ class GameState:
 
                 cannibal.sprite_name = ["CANNIBAL_MOUTH"]
 
-                if side == "left":
-                    cannibal.pos = cannibal.left_shore_pos
-                else:
-                    cannibal.pos = cannibal.right_shore_pos
-
-            self.entities.move_to_missionary(cannibal)
+                cannibal.pos = cannibal.get_position(self.entities.boat.get_position())
+            if not self.collisions.check_collision(
+                    cannibal,
+                    self.entities.ents[cannibal.missionary_to_eat]
+            ):
+                self.entities.move_to_missionary(cannibal)
 
         for cannibal_name in cannibals:
             cannibal = self.entities.ents[cannibal_name]
@@ -46,6 +51,15 @@ class GameState:
             ):
                 return False
         return True
+
+    def get_ent_on_shore(self, side):
+        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        return cannibals, missionaries
+
+    @staticmethod
+    def were_rules_broken(cannibals, missionaries):
+        return len(cannibals) > len(missionaries) > 0
 
     def check_win_lose(self):
         move = self.identify_move()
@@ -178,10 +192,10 @@ class EntityManager:
 
     def move_to_missionary(self, cannibal):
         if cannibal.movement is None:
-            cannibal_pos = cannibal.get_position()
-            miss_pos = self.ents[cannibal.missionary_to_eat].get_position()
+            cannibal_pos = cannibal.get_position(self.boat.get_position())
+            miss_pos = self.ents[cannibal.missionary_to_eat].get_position(self.boat.get_position())
 
-            angle = atan((miss_pos[1]-cannibal_pos[1]) / (miss_pos[0]-cannibal_pos[0]))
+            angle = atan2((miss_pos[1]-cannibal_pos[1]), (miss_pos[0]-cannibal_pos[0]))
             cannibal.movement = (
                 cos(angle) * cannibal.step,
                 sin(angle) * cannibal.step

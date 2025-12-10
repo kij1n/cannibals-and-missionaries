@@ -164,7 +164,7 @@ class GameRenderer:
             rect = pygame.Rect((0, 0), settings.ENTITY_ON_BOAT_SCALE)
             screen.blit(
                 image,
-                settings.BOAT_ENTITY_POS(boat_pos, index),
+                entity.get_position(boat_pos),
                 area=rect
             )
 
