@@ -13,11 +13,10 @@ class GameState:
         self.entities = EntityManager()
         self.gamestate = (3, 3, 0)
         self.game_graph = self.get_game_graph()
+        self.moves_made = 0
 
     def lose(self):
         side = "left"
-        # print(f"detected side loss {side}")
-        # print(f"gamestate: {self.gamestate}")
 
         cannibals, missionaries = self.get_ent_on_shore(side)
 
@@ -83,7 +82,6 @@ class GameState:
             else:
                 move = (move[0], move[1]+1)
         return move
-
 
     def get_game_graph(self):
         max_missionaries = 3
@@ -214,6 +212,7 @@ class EntityManager:
     def stop_ferry(self):
         self.boat.which_shore = self.ferry_moving
         self.ferry_moving = None
+
 
     def ferry(self):
         boat_pos = self.boat.get_position()

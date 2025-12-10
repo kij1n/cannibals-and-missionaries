@@ -14,6 +14,10 @@ GAME_END_FONT = "Poppins-Light.ttf"
 GAME_END_DELAY = 3000  # milliseconds
 GAME_END_POS = (SIZE[0] / 2, SIZE[1] / 2)
 
+GAME_END_MOVES_MADE_POS = (GAME_END_POS[0], GAME_END_POS[1] + 100)
+MOVES_MADE_POS = (100, 50)
+MOVES_MADE_FONT_SIZE = 20
+
 # sprites
 BACKGROUND_PATH = {
     "BACKGROUND1": "images/background1.png",

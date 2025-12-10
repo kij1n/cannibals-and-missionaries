@@ -14,7 +14,7 @@ class View:
         self.sprite_loader = SpriteLoader()
         self.font = pygame.font.Font(settings.FONT, settings.FONT_SIZE)
 
-    def render(self, game_state, menu_state, action):
+    def render(self, game_state, menu_state, action, moves_made):
         self.render_background()
 
         if action == "menu":
@@ -28,10 +28,18 @@ class View:
             self.game_renderer.render(game_state, self.screen, self.sprite_loader)
             if action == "pause":
                 self.render_dim()
-                self.screen = self.menu_renderer.render_pause(
+                self.menu_renderer.render_pause(
                     menu_state,
                     self.screen,
                     pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
+                )
+            else:
+                self.display_text(
+                    f"Moves: {moves_made}",
+                    settings.MOVES_MADE_POS,
+                    settings.TEXT_COLOR,
+                    settings.MOVES_MADE_FONT_SIZE,
+                    settings.FONT
                 )
         elif action == "rules":
             self.render_dim()
@@ -53,7 +61,7 @@ class View:
         dim_overlay.set_alpha(settings.SCREEN_DIM)
         self.screen.blit(dim_overlay, (0, 0))
 
-    def render_end(self, end: str):
+    def render_end(self, end: str, moves_made):
         self.render_dim()
 
         text = None
@@ -69,6 +77,16 @@ class View:
             settings.GAME_END_FONT_SIZE,
             settings.GAME_END_FONT
         )
+        text = f"Moves: {moves_made}"
+
+        self.display_text(
+            text,
+            settings.GAME_END_MOVES_MADE_POS,
+            settings.TEXT_COLOR,
+            settings.MOVES_MADE_FONT_SIZE,
+            settings.GAME_END_FONT
+        )
+
         self.flip()
 
     def render_background(self):
@@ -97,13 +115,11 @@ class MenuRenderer:
         screen = self.show_button(menu_state.buttons["menu_start"], font, screen)
         screen = self.show_button(menu_state.buttons["menu_rules"], font, screen)
         screen = self.show_button(menu_state.buttons["menu_quit"], font, screen)
-        return screen
 
     def render_pause(self, menu_state, screen, font: pygame.font.Font):
         screen = self.show_button(menu_state.buttons["pause_resume"], font, screen)
         screen = self.show_button(menu_state.buttons["pause_quit"], font, screen)
         screen = self.show_button(menu_state.buttons["pause_rules"], font, screen)
-        return screen
 
     @staticmethod
     def render_rules(screen, pos, color, size, font, text_height, text_spacing):
@@ -114,8 +130,6 @@ class MenuRenderer:
             text_box = text_surface.get_rect(center=(pos[0], pos[1] + text_height*multiplier + text_spacing*multiplier))
             screen.blit(text_surface, text_box)
             multiplier += 1
-
-        return screen
 
     @staticmethod
     def show_button(btn, button_font, screen):
@@ -161,7 +175,10 @@ class GameRenderer:
                 entity.get_position(),
             )
         else:
-            rect = pygame.Rect((0, 0), settings.ENTITY_ON_BOAT_SCALE)
+            if entity.missionary_to_eat is not None:
+                rect = pygame.Rect((0, 0), settings.ENTITY_SPRITE_SCALE)
+            else:
+                rect = pygame.Rect((0, 0), settings.ENTITY_ON_BOAT_SCALE)
             screen.blit(
                 image,
                 entity.get_position(boat_pos),

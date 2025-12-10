@@ -91,15 +91,15 @@ class Controller:
         self.action = "pause"
 
     def win(self):
-        self.view.render_end("win")
-        pygame.time.delay(2000)
+        self.view.render_end("win", self.model.game_state.moves_made)
+        pygame.time.delay(settings.GAME_END_DELAY)
         self.running = False
 
     def lose(self):
         settings.LOST = True
         if self.model.game_state.lose():
-            self.view.render_end("lose")
-            pygame.time.delay(2000)
+            self.view.render_end("lose", self.model.game_state.moves_made)
+            pygame.time.delay(settings.GAME_END_DELAY)
             self.running = False
 
     def run(self):
@@ -111,7 +111,8 @@ class Controller:
             self.view.render(
                 self.model.game_state,
                 self.model.menu_state,
-                self.action
+                self.action,
+                self.model.game_state.moves_made
             )
 
             if self.action == "menu" or self.action == "pause":
@@ -139,6 +140,7 @@ class Controller:
             elif self.action == "ferry":
                 arrived = self.model.game_state.entities.ferry()
                 if arrived:
+                    self.model.game_state.moves_made += 1
                     self.model.game_state.entities.stop_ferry()
                     output = self.model.game_state.check_win_lose()
                     if output == "pass":
