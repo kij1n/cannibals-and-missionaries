@@ -86,19 +86,10 @@ ENTITY_RIGHT_POSITIONS = [
 ]
 
 # rules
-RULES = ["Lorem ipsum dolor sit amet, consectetur adipiscing ",
-         "elit. In blandit at erat sed varius. Nunc dolor nunc, ",
-         "posuere et massa et, venenatis pellentesque libero. ",
-         "In hac habitasse platea dictumst. Curabitur id nisi ",
-         "vitae augue accumsan ultrices. Morbi convallis velit ",
-         "non nisi congue, eget ultricies massa molestie. Aliquam ",
-         "convallis tellus risus, nec pellentesque ex tempor in. ",
-         "Aenean ipsum metus, lobortis ac elementum nec, semper ",
-         "eu magna. Nunc eu tellus ut nisl lacinia consequat ut ",
-         "ac urna. Sed convallis vel sem id fermentum. Curabitur ",
-         "fermentum maximus tortor sed sagittis. Donec at feugiat ",
-         "nunc. Sed ut vulputate leo. Nunc quam diam, commodo at ",
-         "ex non, tempor aliquam tortor."]
+RULES = ["The task is to move all of them to right side of the river rules: ",
+         "1. The boat can carry at most two people ",
+         "2. If cannibals num greater than missionaries then the cannibals would eat the missionaries ",
+         "3. The boat cannot cross the river by itself with no people on board"]
 RULES_START_POS = (SIZE[0] / 2, SIZE[1] / 3)
 RULES_FONT_SIZE = 30
 RULES_FONT = "Poppins-Light.ttf"

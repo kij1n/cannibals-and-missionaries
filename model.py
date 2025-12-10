@@ -38,7 +38,8 @@ class GameState:
                 cannibal.pos = cannibal.get_position(self.entities.boat.get_position())
             if not self.collisions.check_collision(
                     cannibal,
-                    self.entities.ents[cannibal.missionary_to_eat]
+                    self.entities.ents[cannibal.missionary_to_eat],
+                    self.entities.boat.get_position()
             ):
                 self.entities.move_to_missionary(cannibal)
 
@@ -46,7 +47,8 @@ class GameState:
             cannibal = self.entities.ents[cannibal_name]
             if not self.collisions.check_collision(
                     cannibal,
-                    self.entities.ents[cannibal.missionary_to_eat]
+                    self.entities.ents[cannibal.missionary_to_eat],
+                    self.entities.boat.get_position()
             ):
                 return False
         return True
@@ -145,8 +147,8 @@ class GameState:
 
 class CollisionManager:
     @staticmethod
-    def check_collision(entity1, entity2):
-        return entity1.get_hitbox().colliderect(entity2.get_hitbox())
+    def check_collision(entity1, entity2, boat_pos=None):
+        return entity1.get_hitbox(boat_pos).colliderect(entity2.get_hitbox(boat_pos))
 
     @staticmethod
     def get_hovered_button(menu_state, mouse_pos, action):
