@@ -1,4 +1,5 @@
 GAME_STARTED = False
+LOST = False
 
 SIZE = (1600, 900)
 SCREEN_TITLE = "cannibals and missionaries"
@@ -9,7 +10,7 @@ SCREEN_DIM = 100
 GAME_WIN = "You won"
 GAME_LOSE = "You lost"
 GAME_END_FONT_SIZE = 100
-GAME_END_FONT = "Poppins-Bold.ttf"
+GAME_END_FONT = "Poppins-Light.ttf"
 GAME_END_DELAY = 3000  # milliseconds
 GAME_END_POS = (SIZE[0] / 2, SIZE[1] / 2)
 

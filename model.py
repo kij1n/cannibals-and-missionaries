@@ -1,70 +1,11 @@
 import pygame
 import settings
+from math import sin, cos, atan
 
 class Model:
     def __init__(self):
         self.game_state = GameState()
         self.menu_state = MenuState()
-        # print(self.game_graph)
-
-    def get_game_graph(self):
-        max_missionaries = 3
-        max_cannibals = 3
-        gamestate = (max_cannibals, max_missionaries, 0) # cannibals on the left, missionaries on the left, boat: 0: left 1: right
-        moves = [
-            (1, 0), (2, 0), # cannibals
-            (0, 1), (0, 2), # missionaries
-            (1, 1)
-        ]
-
-        graph = {}
-        for state in self.get_all_valid_states(max_missionaries, max_cannibals):
-            graph[state] = self.get_next_gamestates(state, moves)
-
-        return graph
-
-    def get_next_gamestates(self, gamestate, moves):
-        cannibals, missionaries, boat = gamestate
-        direction = -1 if boat == 0 else 1
-        next_states = {}
-        for move in moves:
-            next_state = (
-                cannibals + move[0] * direction,
-                missionaries + move[1] * direction,
-                1-boat
-            )
-            if self.is_valid_gamestate(next_state):
-                next_states[move] = next_state
-        return next_states
-
-    def get_all_valid_states(self, max_missionaries, max_cannibals):
-        states = []
-        for missionary in range(max_missionaries+1):
-            for cannibal in range(max_cannibals+1):
-                for boat in [0, 1]:
-                    state = (cannibal, missionary, boat)
-                    if self.is_valid_gamestate(state):
-                        states.append(state)
-        return states
-
-    @staticmethod
-    def is_valid_gamestate(gamestate):
-        left_cannibals, left_missionaries, boat = gamestate
-        if left_cannibals < 0 or left_missionaries < 0:
-            return False
-
-        right_cannibals = 3 - left_cannibals
-        right_missionaries = 3 - left_missionaries
-        if right_cannibals < 0 or right_missionaries < 0:
-            return False
-
-        # Check left shore
-        if left_cannibals > left_missionaries > 0:
-            return False
-        if right_cannibals > right_missionaries > 0:
-            return False
-
-        return True
 
 class GameState:
     def __init__(self):
@@ -72,6 +13,38 @@ class GameState:
         self.entities = EntityManager()
         self.gamestate = (3, 3, 0)
         self.game_graph = self.get_game_graph()
+
+    def lose(self):
+        side = "left" if self.gamestate[2] == 0 else "right"
+
+        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and ent.which_shore == side]
+        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and ent.which_shore == side]
+        assigned_missionaries = []
+
+        for cannibal_name in cannibals:
+            cannibal = self.entities.ents[cannibal_name]
+
+            if cannibal.missionary_to_eat is None:
+                cannibal.assign_missionary_to_eat(missionaries, assigned_missionaries)
+                assigned_missionaries.append(cannibal.missionary_to_eat)
+
+                cannibal.sprite_name = ["CANNIBAL_MOUTH"]
+
+                if side == "left":
+                    cannibal.pos = cannibal.left_shore_pos
+                else:
+                    cannibal.pos = cannibal.right_shore_pos
+
+            self.entities.move_to_missionary(cannibal)
+
+        for cannibal_name in cannibals:
+            cannibal = self.entities.ents[cannibal_name]
+            if not self.collisions.check_collision(
+                    cannibal,
+                    self.entities.ents[cannibal.missionary_to_eat]
+            ):
+                return False
+        return True
 
     def check_win_lose(self):
         move = self.identify_move()
@@ -159,6 +132,10 @@ class GameState:
 
 class CollisionManager:
     @staticmethod
+    def check_collision(entity1, entity2):
+        return entity1.get_hitbox().colliderect(entity2.get_hitbox())
+
+    @staticmethod
     def get_hovered_button(menu_state, mouse_pos, action):
         for key, value in menu_state.buttons.items():
             if value.rect.collidepoint(mouse_pos) and action == "menu"\
@@ -184,6 +161,7 @@ class CollisionManager:
 
         return None
 
+
 class EntityManager:
     def __init__(self):
         self.ents = {
@@ -196,6 +174,21 @@ class EntityManager:
         }
         self.boat = Boat(settings.BOAT_LEFT_POS)
         self.ferry_moving = None
+
+    def move_to_missionary(self, cannibal):
+        if cannibal.movement is None:
+            cannibal_pos = cannibal.get_position()
+            miss_pos = self.ents[cannibal.missionary_to_eat].get_position()
+
+            angle = atan((miss_pos[1]-cannibal_pos[1]) / (miss_pos[0]-cannibal_pos[0]))
+            cannibal.movement = (
+                cos(angle) * cannibal.step,
+                sin(angle) * cannibal.step
+            )
+
+        cannibal.move(
+            cannibal.movement
+        )
 
     def is_ferry_done(self):
         return self.ferry_moving is None
@@ -316,14 +309,23 @@ class Entity:
         self.which_shore = "left"
         self.left_shore_pos = left_shore_pos
         self.right_shore_pos = right_shore_pos
+        self.pos = None
+        self.movement = None
+
+        self.step = 1
+        self.missionary_to_eat = None
 
     def get_position(self, boat_pos=None):
-        if self.which_shore == "left":
+        if self.pos is not None:
+            return self.pos
+        elif self.on_boat:
+            return settings.BOAT_ENTITY_POS(boat_pos, self.index_boat_pos)
+        elif self.which_shore == "left":
             return self.left_shore_pos
         elif self.which_shore == "right":
             return self.right_shore_pos
         else:
-            return settings.BOAT_ENTITY_POS(boat_pos, self.index_boat_pos)
+            return None
 
     def move_to_boat(self, index):
         self.which_shore = None
@@ -352,6 +354,22 @@ class Entity:
         rect = pygame.Rect(hitbox_pos, hitbox_size)
         rect.scale_by_ip(settings.HITBOX_SCALE)
         return rect
+
+    def assign_missionary_to_eat(self, missionaries, missionaries_assigned):
+        if self.missionary_to_eat is not None:
+            return
+        else:
+            missionaries_to_assign = [m for m in missionaries if m not in missionaries_assigned]
+            if len(missionaries_to_assign) > 0:
+                self.missionary_to_eat = missionaries_to_assign[0]
+            else:
+                self.missionary_to_eat = missionaries[0]
+
+    def move(self, movement):
+        self.pos = (
+            self.pos[0] + movement[0],
+            self.pos[1] + movement[1]
+        )
 
 
 class MenuState:

@@ -14,7 +14,7 @@ class View:
         self.sprite_loader = SpriteLoader()
         self.font = pygame.font.Font(settings.FONT, settings.FONT_SIZE)
 
-    def render(self, game_state, menu_state, action, end=None):
+    def render(self, game_state, menu_state, action):
         self.render_background()
 
         if action == "menu":
@@ -24,7 +24,7 @@ class View:
                 self.screen,
                 pygame.font.Font(settings.BUTTON_FONT, settings.BUTTON_FONT_SIZE)
             )
-        elif action == "listen" or action == "ferry" or action == "pause":
+        elif action in ["listen", "ferry", "pause", "win", "lose"]:
             self.game_renderer.render(game_state, self.screen, self.sprite_loader)
             if action == "pause":
                 self.render_dim()
@@ -44,8 +44,6 @@ class View:
                 settings.RULES_TEXT_HEIGHT,
                 settings.RULES_TEXT_SPACING
             )
-        elif end is not None:
-            self.render_end(end)
 
         self.flip()
 
@@ -71,6 +69,7 @@ class View:
             settings.GAME_END_FONT_SIZE,
             settings.GAME_END_FONT
         )
+        self.flip()
 
     def render_background(self):
         self.screen.blit(
@@ -94,6 +93,18 @@ class View:
 
 
 class MenuRenderer:
+    # @staticmethod
+    # def render_win(result, screen, font):
+    #     if result == "win":
+    #         text = settings.GAME_WIN
+    #     else:
+    #         text = settings.GAME_LOSE
+    #     text_surface = font.render(text, False, settings.TEXT_COLOR)
+    #     text_box = text_surface.get_rect()
+    #     text_box.center = settings.GAME_END_POS
+    #     screen.blit(text_surface, text_box)
+    #     return screen
+
     def render_menu(self, menu_state, screen, font: pygame.font.Font):
         screen = self.show_button(menu_state.buttons["menu_start"], font, screen)
         screen = self.show_button(menu_state.buttons["menu_rules"], font, screen)

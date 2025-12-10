@@ -16,7 +16,7 @@ class Controller:
     def event_handler(self, button=None, hovered_entity=None, action=None):
         for event in pygame.event.get():
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE and not settings.LOST:
                     if self.action == "menu":
                         self.quit()
                     elif self.action == "pause":
@@ -90,18 +90,28 @@ class Controller:
     def pause(self):
         self.action = "pause"
 
+    def win(self):
+        self.view.render_end("win")
+        pygame.time.delay(2000)
+        self.running = False
+
+    def lose(self):
+        settings.LOST = True
+        if self.model.game_state.lose():
+            self.view.render_end("lose")
+            pygame.time.delay(2000)
+            self.running = False
+
     def run(self):
         self.running = True
         self.action = "menu"
 
         while self.running:
-            win = self.model.game_state.check_win_lose()
 
             self.view.render(
                 self.model.game_state,
                 self.model.menu_state,
-                self.action,
-                win
+                self.action
             )
 
             if self.action == "menu" or self.action == "pause":
@@ -123,7 +133,7 @@ class Controller:
                     self.model.game_state,
                     pygame.mouse.get_pos()
                 )
-                
+
                 self.event_handler(None, hovered_entity)
 
             elif self.action == "ferry":
@@ -140,8 +150,10 @@ class Controller:
 
                 self.event_handler(None, self.action)
             elif self.action == "win":
-                pass
+                self.win()
             elif self.action == "lose":
-                pass
+                # print("LOSE")
+                self.lose()
+                self.event_handler()
 
             self.fps.tick(settings.FRAMERATE)
