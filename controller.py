@@ -64,7 +64,7 @@ class Controller:
             return
 
         if action == "menu":
-            if bugitton == "menu_start":
+            if button == "menu_start":
                 self.play()
             elif button == "menu_rules":
                 self.rules()
