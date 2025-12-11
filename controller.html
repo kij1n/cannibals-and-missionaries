@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module controller</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">controller</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:/home/kijin/Desktop/python/homework3/controller.py">/home/kijin/Desktop/python/homework3/controller.py</a></td></tr></table>
+    <p><span class="code"><a href="#Controller">Controller</a>&nbsp;module&nbsp;for&nbsp;the&nbsp;MVC&nbsp;architecture&nbsp;of&nbsp;the&nbsp;game<br>
+application.&nbsp;Handles&nbsp;user&nbsp;input&nbsp;and&nbsp;delegates&nbsp;logic<br>
+and&nbsp;rendering&nbsp;to&nbsp;the&nbsp;model&nbsp;and&nbsp;view.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="pygame.html">pygame</a><br>
+</td><td class="multicolumn"><a href="settings.html">settings</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="controller.html#Controller">Controller</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Controller">class <strong>Controller</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Controller">Controller</a>(model:&nbsp;model.Model,&nbsp;view:&nbsp;view.View)<br>
+&nbsp;<br>
+The&nbsp;main&nbsp;controller&nbsp;for&nbsp;the&nbsp;application.&nbsp;It&nbsp;manages&nbsp;the&nbsp;game&nbsp;loop,&nbsp;handles<br>
+user&nbsp;input,&nbsp;and&nbsp;coordinates&nbsp;updates&nbsp;between&nbsp;the&nbsp;Model&nbsp;and&nbsp;View.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model&nbsp;(Model):&nbsp;The&nbsp;game&nbsp;logic&nbsp;model.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;view&nbsp;(View):&nbsp;The&nbsp;game&nbsp;view&nbsp;for&nbsp;rendering.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;running&nbsp;(bool):&nbsp;Flag&nbsp;to&nbsp;keep&nbsp;the&nbsp;game&nbsp;loop&nbsp;running.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;action&nbsp;(str):&nbsp;The&nbsp;current&nbsp;state&nbsp;of&nbsp;the&nbsp;game&nbsp;(e.g.,&nbsp;"menu",&nbsp;"listen",&nbsp;"ferry").<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fps&nbsp;(pygame.time.Clock):&nbsp;Clock&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;control&nbsp;the&nbsp;frame&nbsp;rate.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Controller-__init__"><strong>__init__</strong></a>(self, model: model.Model, view: view.View)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
+
+<dl><dt><a name="Controller-action_ferry"><strong>action_ferry</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'ferry'&nbsp;state&nbsp;(boat&nbsp;moving).<br>
+Updates&nbsp;the&nbsp;boat&nbsp;position,&nbsp;checks&nbsp;for&nbsp;arrival,&nbsp;and&nbsp;determines&nbsp;the&nbsp;game&nbsp;outcome<br>
+(win,&nbsp;lose,&nbsp;or&nbsp;continue&nbsp;listening).</span></dd></dl>
+
+<dl><dt><a name="Controller-action_listen"><strong>action_listen</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'listen'&nbsp;state&nbsp;(active&nbsp;gameplay).<br>
+Checks&nbsp;for&nbsp;hovered&nbsp;entities&nbsp;or&nbsp;the&nbsp;boat&nbsp;and&nbsp;calls&nbsp;the&nbsp;event&nbsp;handler.</span></dd></dl>
+
+<dl><dt><a name="Controller-action_lose"><strong>action_lose</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'lose'&nbsp;state.&nbsp;Calls&nbsp;the&nbsp;lose&nbsp;handler&nbsp;and&nbsp;event&nbsp;handler<br>
+to&nbsp;allow&nbsp;the&nbsp;lose&nbsp;animation&nbsp;to&nbsp;play&nbsp;out.</span></dd></dl>
+
+<dl><dt><a name="Controller-action_menu_pause"><strong>action_menu_pause</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'menu'&nbsp;and&nbsp;'pause'&nbsp;states&nbsp;in&nbsp;the&nbsp;game&nbsp;loop.<br>
+Updates&nbsp;button&nbsp;hover&nbsp;states&nbsp;and&nbsp;calls&nbsp;the&nbsp;event&nbsp;handler.</span></dd></dl>
+
+<dl><dt><a name="Controller-action_rules"><strong>action_rules</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'rules'&nbsp;state&nbsp;in&nbsp;the&nbsp;game&nbsp;loop.<br>
+Primarily&nbsp;listens&nbsp;for&nbsp;events&nbsp;(like&nbsp;ESC&nbsp;to&nbsp;exit&nbsp;rules).</span></dd></dl>
+
+<dl><dt><a name="Controller-action_win"><strong>action_win</strong></a>(self)</dt><dd><span class="code">Logic&nbsp;for&nbsp;the&nbsp;'win'&nbsp;state.&nbsp;Calls&nbsp;the&nbsp;win&nbsp;handler.</span></dd></dl>
+
+<dl><dt><a name="Controller-event_handler"><strong>event_handler</strong></a>(self, button=None, hovered_entity=None, action=None)</dt><dd><span class="code">Processes&nbsp;the&nbsp;queue&nbsp;of&nbsp;pygame&nbsp;events.<br>
+Delegates&nbsp;specific&nbsp;events&nbsp;(quit,&nbsp;keyup,&nbsp;mousebuttonup)&nbsp;to&nbsp;specialized&nbsp;handlers.<br>
+:param&nbsp;button:&nbsp;String&nbsp;representing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;button&nbsp;clicked,&nbsp;if&nbsp;any.<br>
+:param&nbsp;hovered_entity:&nbsp;String&nbsp;representing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;entity&nbsp;hovered&nbsp;over,&nbsp;if&nbsp;any.<br>
+:param&nbsp;action:&nbsp;String&nbsp;representing&nbsp;the&nbsp;current&nbsp;game&nbsp;action&nbsp;("menu",&nbsp;"pause",&nbsp;or&nbsp;"listen").<br>
+:return:&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Controller-handle_click_entity"><strong>handle_click_entity</strong></a>(self, event, hovered_entity)</dt><dd><span class="code">Handles&nbsp;mouse&nbsp;click&nbsp;events&nbsp;during&nbsp;gameplay&nbsp;(listen&nbsp;state).<br>
+Manages&nbsp;logic&nbsp;for&nbsp;clicking&nbsp;on&nbsp;the&nbsp;boat&nbsp;(to&nbsp;move&nbsp;it)&nbsp;or&nbsp;entities&nbsp;(to&nbsp;load/unload).<br>
+:param&nbsp;event:&nbsp;Pygame&nbsp;mouse&nbsp;event.<br>
+:param&nbsp;hovered_entity:&nbsp;String&nbsp;representing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;entity&nbsp;hovered&nbsp;over.<br>
+:return:&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Controller-handle_click_menu"><strong>handle_click_menu</strong></a>(self, event, button, action)</dt><dd><span class="code">Handles&nbsp;mouse&nbsp;click&nbsp;events&nbsp;when&nbsp;in&nbsp;the&nbsp;menu&nbsp;or&nbsp;pause&nbsp;screen.<br>
+Checks&nbsp;which&nbsp;button&nbsp;was&nbsp;clicked&nbsp;and&nbsp;triggers&nbsp;the&nbsp;corresponding&nbsp;action.<br>
+&nbsp;<br>
+:param&nbsp;event:&nbsp;Pygame&nbsp;mouse&nbsp;event.<br>
+:param&nbsp;button:&nbsp;String&nbsp;representing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;button&nbsp;clicked.<br>
+:param&nbsp;action:&nbsp;String&nbsp;representing&nbsp;the&nbsp;current&nbsp;game&nbsp;action&nbsp;("menu"&nbsp;or&nbsp;"pause").<br>
+:return:&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Controller-handle_escape"><strong>handle_escape</strong></a>(self)</dt><dd><span class="code">Handles&nbsp;the&nbsp;logic&nbsp;when&nbsp;the&nbsp;ESC&nbsp;key&nbsp;is&nbsp;pressed.<br>
+Depending&nbsp;on&nbsp;the&nbsp;current&nbsp;action&nbsp;(menu,&nbsp;pause,&nbsp;rules),&nbsp;it&nbsp;toggles&nbsp;the&nbsp;game&nbsp;state<br>
+between&nbsp;pause,&nbsp;menu,&nbsp;and&nbsp;resume.<br>
+:return:&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Controller-lose"><strong>lose</strong></a>(self)</dt><dd><span class="code">Handles&nbsp;the&nbsp;lose&nbsp;condition.<br>
+Checks&nbsp;if&nbsp;the&nbsp;loss&nbsp;animation&nbsp;logic&nbsp;is&nbsp;complete,&nbsp;then&nbsp;triggers&nbsp;the&nbsp;lose&nbsp;view.</span></dd></dl>
+
+<dl><dt><a name="Controller-move_ferry"><strong>move_ferry</strong></a>(self)</dt><dd><span class="code">Initiates&nbsp;the&nbsp;ferry&nbsp;movement&nbsp;sequence.<br>
+Determines&nbsp;the&nbsp;destination&nbsp;shore&nbsp;based&nbsp;on&nbsp;current&nbsp;position&nbsp;and&nbsp;updates&nbsp;the&nbsp;model.</span></dd></dl>
+
+<dl><dt><a name="Controller-pause"><strong>pause</strong></a>(self)</dt><dd><span class="code">Pauses&nbsp;the&nbsp;game&nbsp;by&nbsp;setting&nbsp;the&nbsp;action&nbsp;to&nbsp;'pause'.</span></dd></dl>
+
+<dl><dt><a name="Controller-play"><strong>play</strong></a>(self)</dt><dd><span class="code">Starts&nbsp;the&nbsp;game&nbsp;by&nbsp;setting&nbsp;the&nbsp;action&nbsp;to&nbsp;'listen'&nbsp;and&nbsp;marking&nbsp;the&nbsp;game&nbsp;as&nbsp;started.</span></dd></dl>
+
+<dl><dt><a name="Controller-quit"><strong>quit</strong></a>(self)</dt><dd><span class="code">Sets&nbsp;the&nbsp;running&nbsp;flag&nbsp;to&nbsp;False,&nbsp;effectively&nbsp;stopping&nbsp;the&nbsp;game&nbsp;loop.</span></dd></dl>
+
+<dl><dt><a name="Controller-resume"><strong>resume</strong></a>(self)</dt><dd><span class="code">Resumes&nbsp;the&nbsp;game&nbsp;from&nbsp;a&nbsp;paused&nbsp;state.<br>
+Checks&nbsp;if&nbsp;the&nbsp;ferry&nbsp;was&nbsp;in&nbsp;motion&nbsp;to&nbsp;determine&nbsp;whether&nbsp;to&nbsp;return&nbsp;to&nbsp;'ferry'&nbsp;or&nbsp;'listen'&nbsp;state.</span></dd></dl>
+
+<dl><dt><a name="Controller-rules"><strong>rules</strong></a>(self)</dt><dd><span class="code">Switches&nbsp;the&nbsp;current&nbsp;action&nbsp;to&nbsp;'rules'&nbsp;to&nbsp;display&nbsp;the&nbsp;rules&nbsp;screen.</span></dd></dl>
+
+<dl><dt><a name="Controller-run"><strong>run</strong></a>(self)</dt><dd><span class="code">The&nbsp;main&nbsp;game&nbsp;loop.<br>
+Continuously&nbsp;renders&nbsp;the&nbsp;game&nbsp;state&nbsp;and&nbsp;delegates&nbsp;logic&nbsp;execution<br>
+based&nbsp;on&nbsp;the&nbsp;current&nbsp;`action`&nbsp;state.</span></dd></dl>
+
+<dl><dt><a name="Controller-win"><strong>win</strong></a>(self)</dt><dd><span class="code">Handles&nbsp;the&nbsp;win&nbsp;condition.<br>
+Triggers&nbsp;the&nbsp;win&nbsp;view&nbsp;and&nbsp;stops&nbsp;the&nbsp;game&nbsp;after&nbsp;a&nbsp;short&nbsp;delay.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
