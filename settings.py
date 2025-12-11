@@ -55,10 +55,18 @@ BOAT_RIGHT_POS = (850 + BOAT_MOVE_RIGHT[0], 444 + BOAT_MOVE_RIGHT[1])
 # rendering entities in the boat
 DIST_FROM_EDGE_OF_BOAT = 0
 DIST_BETWEEN_ENTS_IN_BOAT = 0
-boat_entity_pos = lambda boat_pos, index: (
-    boat_pos[0] + DIST_FROM_EDGE_OF_BOAT + (ENTITY_SPRITE_SCALE[0] / 2 + DIST_BETWEEN_ENTS_IN_BOAT) * index,
-    boat_pos[1] - 80
-)
+
+
+# boat_entity_pos = lambda boat_pos, index: (
+#     boat_pos[0] + DIST_FROM_EDGE_OF_BOAT + (ENTITY_SPRITE_SCALE[0] / 2 + DIST_BETWEEN_ENTS_IN_BOAT) * index,
+#     boat_pos[1] - 80
+# )
+
+def boat_entity_pos(boat_pos, index):
+    return (
+        boat_pos[0] + DIST_FROM_EDGE_OF_BOAT + (ENTITY_SPRITE_SCALE[0] / 2 + DIST_BETWEEN_ENTS_IN_BOAT) * index,
+        boat_pos[1] - 80
+    )
 
 
 # entity rendering constants
@@ -66,12 +74,16 @@ LEFT_MOVE = (-40, -100)
 RIGHT_MOVE = (-50, -50)
 
 ENTITY_LEFT_POSITIONS = [
-    (24 + LEFT_MOVE[0], 401 + LEFT_MOVE[1]), (70  + LEFT_MOVE[0], 511 + LEFT_MOVE[1]), (188  + LEFT_MOVE[0], 406 + LEFT_MOVE[1]),
-    (268  + LEFT_MOVE[0], 484 + LEFT_MOVE[1]), (330  + LEFT_MOVE[0], 403 + LEFT_MOVE[1]), (399  + LEFT_MOVE[0], 475 + LEFT_MOVE[1])
+    (24 + LEFT_MOVE[0], 401 + LEFT_MOVE[1]), (70 + LEFT_MOVE[0], 511 + LEFT_MOVE[1]),
+    (188 + LEFT_MOVE[0], 406 + LEFT_MOVE[1]),
+    (268 + LEFT_MOVE[0], 484 + LEFT_MOVE[1]), (330 + LEFT_MOVE[0], 403 + LEFT_MOVE[1]),
+    (399 + LEFT_MOVE[0], 475 + LEFT_MOVE[1])
 ]
 ENTITY_RIGHT_POSITIONS = [
-    (1149 + RIGHT_MOVE[0], 388 + RIGHT_MOVE[1]), (1230 + RIGHT_MOVE[0], 468 + RIGHT_MOVE[1]), (1316 + RIGHT_MOVE[0], 388 + RIGHT_MOVE[1]),
-    (1374 + RIGHT_MOVE[0], 484 + RIGHT_MOVE[1]), (1435 + RIGHT_MOVE[0], 377 + RIGHT_MOVE[1]), (1514 + RIGHT_MOVE[0], 483 + RIGHT_MOVE[1])
+    (1149 + RIGHT_MOVE[0], 388 + RIGHT_MOVE[1]), (1230 + RIGHT_MOVE[0], 468 + RIGHT_MOVE[1]),
+    (1316 + RIGHT_MOVE[0], 388 + RIGHT_MOVE[1]),
+    (1374 + RIGHT_MOVE[0], 484 + RIGHT_MOVE[1]), (1435 + RIGHT_MOVE[0], 377 + RIGHT_MOVE[1]),
+    (1514 + RIGHT_MOVE[0], 483 + RIGHT_MOVE[1])
 ]
 
 # rules
@@ -84,7 +96,6 @@ RULES_FONT_SIZE = 30
 RULES_FONT = "Poppins-Light.ttf"
 RULES_TEXT_SPACING = 20
 RULES_TEXT_HEIGHT = 10
-
 
 # button constants
 BUTTON_HEIGHT = 75

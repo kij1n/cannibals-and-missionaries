@@ -8,6 +8,7 @@ import pygame
 import settings
 from math import sin, cos, atan2
 
+
 class Model:
     """
     The main model class that aggregates different game states.
@@ -17,9 +18,11 @@ class Model:
         game_state (GameState): The state of the active game (entities, boat, rules).
         menu_state (MenuState): The state of the menu (buttons, UI).
     """
+
     def __init__(self):
         self.game_state = GameState()
         self.menu_state = MenuState()
+
 
 class GameState:
     """
@@ -33,6 +36,7 @@ class GameState:
         game_graph (dict): A pre-calculated graph of all valid game states and moves.
         moves_made (int): Counter for the number of moves made.
     """
+
     def __init__(self):
         self.collisions = CollisionManager()
         self.entities = EntityManager()
@@ -89,8 +93,10 @@ class GameState:
         :param side: String representing the shoreside ("left" or "right").
         :return: Two lists of entity names: cannibals and missionaries.
         """
-        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
-        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and (ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        cannibals = [ent.name for ent in self.entities.ents.values() if ent.type == "cannibal" and (
+                    ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
+        missionaries = [ent.name for ent in self.entities.ents.values() if ent.type == "missionary" and (
+                    ent.which_shore == side or (ent.on_boat and self.entities.boat.which_shore == side))]
         return cannibals, missionaries
 
     @staticmethod
@@ -135,9 +141,9 @@ class GameState:
         move = (0, 0)
         for ent_name in held_entities:
             if ent_name[0:-1] == "cannibal":
-                move = (move[0]+1, move[1])
+                move = (move[0] + 1, move[1])
             else:
-                move = (move[0], move[1]+1)
+                move = (move[0], move[1] + 1)
         return move
 
     def get_game_graph(self):
@@ -147,10 +153,11 @@ class GameState:
         """
         max_missionaries = 3
         max_cannibals = 3
-        gamestate = (max_cannibals, max_missionaries, 0) # cannibals on the left, missionaries on the left, boat: 0: left 1: right
+        gamestate = (max_cannibals, max_missionaries,
+                     0)  # cannibals on the left, missionaries on the left, boat: 0: left 1: right
         moves = [
-            (1, 0), (2, 0), # cannibals
-            (0, 1), (0, 2), # missionaries
+            (1, 0), (2, 0),  # cannibals
+            (0, 1), (0, 2),  # missionaries
             (1, 1)
         ]
 
@@ -163,9 +170,11 @@ class GameState:
     def get_next_gamestates(self, gamestate, moves):
         """
         Generate the next possible game states from a given game state and a list of moves.
-        :param gamestate: Tuple representing the current game state (cannibals on the left, missionaries on the left, boat: 0: left 1: right).
+        :param gamestate: Tuple representing the current game state (cannibals
+        on the left, missionaries on the left, boat: 0: left 1: right).
         :param moves: List of possible moves (cannibals moved, missionaries moved).
-        :return: Dictionary representing the next possible game states, mapping each move to its corresponding game state.
+        :return: Dictionary representing the next possible game states, mapping each move to
+        its corresponding game state.
         """
         cannibals, missionaries, boat = gamestate
         direction = -1 if boat == 0 else 1
@@ -174,7 +183,7 @@ class GameState:
             next_state = (
                 cannibals + move[0] * direction,
                 missionaries + move[1] * direction,
-                1-boat
+                1 - boat
             )
             if self.is_valid_gamestate(next_state):
                 next_states[move] = next_state
@@ -182,14 +191,15 @@ class GameState:
 
     def get_all_valid_states(self, max_missionaries, max_cannibals):
         """
-        Generate all possible and valid game states given the maximum number of missionaries and cannibals on the shores.
+        Generate all possible and valid game states given the maximum number
+        of missionaries and cannibals on the shores.
         :param max_missionaries: Integer representing the maximum number of missionaries on the shores.
         :param max_cannibals: Integer representing the maximum number of cannibals on the shores.
         :return: List of tuples representing all possible and valid game states.
         """
         states = []
-        for missionary in range(max_missionaries+1):
-            for cannibal in range(max_cannibals+1):
+        for missionary in range(max_missionaries + 1):
+            for cannibal in range(max_cannibals + 1):
                 for boat in [0, 1]:
                     state = (cannibal, missionary, boat)
                     if self.is_valid_gamestate(state):
@@ -200,7 +210,8 @@ class GameState:
     def is_valid_gamestate(gamestate):
         """
         Check if a given game state is valid.
-        :param gamestate: Tuple representing the current game state (cannibals on the left, missionaries on the left, boat: 0: left 1: right).
+        :param gamestate: Tuple representing the current game state (cannibals
+        on the left, missionaries on the left, boat: 0: left 1: right).
         :return: Boolean True if the game state is valid, False otherwise.
         """
         max_cannibals = 3
@@ -229,6 +240,7 @@ class CollisionManager:
     A class to handle collision detection between game entities and UI elements.
     Provides methods to check for collisions and identify hovered buttons or entities.
     """
+
     @staticmethod
     def check_collision(entity1, entity2, boat_pos=None):
         """
@@ -250,10 +262,10 @@ class CollisionManager:
         :return: String representing the name of the button hovered over, or None if no button is hovered over.
         """
         for key, value in menu_state.buttons.items():
-            if value.rect.collidepoint(mouse_pos) and action == "menu"\
+            if value.rect.collidepoint(mouse_pos) and action == "menu" \
                     and key in ["menu_start", "menu_rules", "menu_quit"]:
                 return key
-            elif value.rect.collidepoint(mouse_pos) and action == "pause"\
+            elif value.rect.collidepoint(mouse_pos) and action == "pause" \
                     and key in ["pause_resume", "pause_quit", "pause_rules"]:
                 return key
         return None
@@ -286,8 +298,10 @@ class EntityManager:
     Attributes:
         ents: Dictionary mapping entity names to Entity objects representing the entities.
         boat: Boat object representing the boat.
-        ferry_moving: String representing the side of the shore the ferry is moving to, or None if the ferry is not moving.
+        ferry_moving: String representing the side of the shore the ferry is moving to,
+        or None if the ferry is not moving.
     """
+
     def __init__(self):
         self.ents = {
             "cannibal1": self.add_entity("cannibal", "cannibal1", 0),
@@ -310,7 +324,7 @@ class EntityManager:
             cannibal_pos = cannibal.get_position(self.boat.get_position())
             miss_pos = self.ents[cannibal.missionary_to_eat].get_position(self.boat.get_position())
 
-            angle = atan2((miss_pos[1]-cannibal_pos[1]), (miss_pos[0]-cannibal_pos[0]))
+            angle = atan2((miss_pos[1] - cannibal_pos[1]), (miss_pos[0] - cannibal_pos[0]))
             cannibal.movement = (
                 cos(angle) * cannibal.step,
                 sin(angle) * cannibal.step
@@ -390,7 +404,7 @@ class EntityManager:
         if len(held_entities) == 1:
             other_index = self.ents[held_entities[0]].get_index_on_boat()
             self.boat.held_entities.append(entity_name)
-            self.ents[entity_name].move_to_boat(1-other_index)
+            self.ents[entity_name].move_to_boat(1 - other_index)
 
         if len(held_entities) == 0:
             self.boat.held_entities.append(entity_name)
@@ -450,10 +464,11 @@ class Boat:
         sprite_name: List of strings representing the names of the sprites used to render the boat.
         name: String representing the name of the boat ("boat").
     """
+
     def __init__(self, pos):
         self.pos = pos
         self.held_entities = []
-        self.which_shore = "left" # holds entity names on the boat
+        self.which_shore = "left"  # holds entity names on the boat
         self.speed = settings.BOAT_SPEED
         self.sprite_name = ["BOAT_1"]
         self.name = "boat"
@@ -508,10 +523,12 @@ class Entity:
         pos: Tuple representing the position of the entity (x, y), used the a cannibal eats a missionary.
 
         movement: Tuple representing the movement vector of the entity (dx, dy), used to move a cannibal.
-        step: Integer representing the number of pixels the entity moves each frame when moving to its assigned missionary.
+        step: Integer representing the number of pixels the entity moves each frame when moving to
+        its assigned missionary.
 
         missionary_to_eat: String representing the name of the missionary the entity is assigned to eat.
     """
+
     def __init__(self, name, type_of_entity, left_shore_pos, right_shore_pos):
         self.index_boat_pos = None
         self.name = name
@@ -583,7 +600,8 @@ class Entity:
     def get_hitbox(self, boat_pos=None):
         """
         Create and return a rectangle representing the hitbox of the entity.
-        :param boat_pos: Position of the boat (x, y), used to calculate the hitbox position if the entity is on the boat.
+        :param boat_pos: Position of the boat (x, y), used to calculate
+        the hitbox position if the entity is on the boat.
         :return: Pygame Rect object representing the hitbox of the entity.
         """
         pos = self.get_position(boat_pos)
@@ -634,6 +652,7 @@ class MenuState:
     Attributes:
         buttons: Dictionary mapping button names to Button objects representing the buttons in the menu.
     """
+
     def __init__(self):
         self.buttons = {
             "pause_resume": self.create_button("Resume", True, 0),

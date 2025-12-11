@@ -22,6 +22,7 @@ class Controller:
         action (str): The current state of the game (e.g., "menu", "listen", "ferry").
         fps (pygame.time.Clock): Clock object to control the frame rate.
     """
+
     def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
@@ -63,13 +64,19 @@ class Controller:
             return
 
         if action == "menu":
-            if button == "menu_start": self.play()
-            elif button == "menu_rules": self.rules()
-            elif button == "menu_quit": self.quit()
+            if button == "menu_start":
+                self.play()
+            elif button == "menu_rules":
+                self.rules()
+            elif button == "menu_quit":
+                self.quit()
         elif action == "pause":
-            if button == "pause_resume": self.resume()
-            elif button == "pause_rules": self.rules()
-            elif button == "pause_quit": self.quit()
+            if button == "pause_resume":
+                self.resume()
+            elif button == "pause_rules":
+                self.rules()
+            elif button == "pause_quit":
+                self.quit()
 
     def handle_click_entity(self, event, hovered_entity):
         """
@@ -119,7 +126,6 @@ class Controller:
                     hovered_entity is not None and
                     self.action == "listen"):
                 self.handle_click_entity(event, hovered_entity)
-
 
     def play(self):
         """
@@ -254,7 +260,6 @@ class Controller:
         """
         self.lose()
         self.event_handler()
-
 
     def run(self):
         """

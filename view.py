@@ -6,6 +6,7 @@ Handles all rendering and visual presentation using Pygame.
 import pygame
 import settings
 
+
 class View:
     """
     Manages the visual presentation of the game using Pygame.
@@ -18,6 +19,7 @@ class View:
         sprite_loader (SpriteLoader): Manages loading and storage of sprites.
         font (pygame.font.Font): Default font for rendering text.
     """
+
     def __init__(self):
         """
         Initializes the Pygame environment, sets up the display window,
@@ -193,6 +195,7 @@ class MenuRenderer:
     """
     Handles the rendering of menu-related elements, such as buttons and rule text.
     """
+
     def render_menu(self, menu_state, screen, font: pygame.font.Font):
         """
         Renders the buttons for the main menu (Start, Rules, Quit).
@@ -226,7 +229,8 @@ class MenuRenderer:
         multiplier = 1
         for line in settings.RULES:
             text_surface = py_font.render(line, True, color)
-            text_box = text_surface.get_rect(center=(pos[0], pos[1] + text_height*multiplier + text_spacing*multiplier))
+            text_box = text_surface.get_rect(
+                center=(pos[0], pos[1] + text_height * multiplier + text_spacing * multiplier))
             screen.blit(text_surface, text_box)
             multiplier += 1
 
@@ -246,10 +250,12 @@ class MenuRenderer:
         text_box.center = btn.get_center()
         screen.blit(text_surface, text_box)
 
+
 class GameRenderer:
     """
     Handles the rendering of gameplay elements, including the boat and characters (entities).
     """
+
     def render(self, game_state, screen, sprite_loader):
         """
         Orchestrates the rendering of all game entities and the boat.
@@ -260,7 +266,7 @@ class GameRenderer:
         """
         self.render_entities(game_state, screen, sprite_loader)
 
-        #render boat
+        # render boat
         self.render_boat(game_state.entities.boat, screen, sprite_loader, game_state)
 
     def render_boat(self, boat, screen, sprite_loader, game_state):
@@ -293,9 +299,8 @@ class GameRenderer:
                 continue
             self.render_entity(entity, screen, sprite_loader)
 
-
     @staticmethod
-    def render_entity(entity, screen, sprite_loader,on_boat=False, index=None, boat_pos=None):
+    def render_entity(entity, screen, sprite_loader, on_boat=False, index=None, boat_pos=None):
         """
         Draws a single entity's sprite at its current position.
         Handles scaling differences for entities on the boat vs. on shore.
@@ -340,6 +345,7 @@ class SpriteLoader:
     """
     Responsible for loading and caching game assets (sprites) from disk.
     """
+
     def __init__(self):
         self.sprites = {}
         for name in settings.ENTITY_ASSET_PATHS.keys():
