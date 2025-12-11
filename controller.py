@@ -1,3 +1,9 @@
+"""
+Controller module for the MVC architecture of the game
+application. Handles user input and delegates logic
+and rendering to the model and view.
+"""
+
 import pygame
 from model import Model
 from view import View

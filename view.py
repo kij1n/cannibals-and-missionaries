@@ -1,3 +1,8 @@
+"""
+View component of the MVC architecture for the game.
+Handles all rendering and visual presentation using Pygame.
+"""
+
 import pygame
 import settings
 

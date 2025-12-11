@@ -1,3 +1,9 @@
+"""
+Model component of the MVC architecture.
+Contains classes for managing the game state
+and entities.
+"""
+
 import pygame
 import settings
 from math import sin, cos, atan2
@@ -458,7 +464,7 @@ class Boat:
         :param index: Integer representing the index of the entity on the boat.
         :return: Tuple representing the position of the entity (x, y).
         """
-        return settings.BOAT_ENTITY_POS(self.pos, index)
+        return settings.boat_entity_pos(self.pos, index)
 
     def get_held_entity_names(self):
         """
@@ -539,7 +545,7 @@ class Entity:
         if self.pos is not None:
             return self.pos
         elif self.on_boat:
-            return settings.BOAT_ENTITY_POS(boat_pos, self.index_boat_pos)
+            return settings.boat_entity_pos(boat_pos, self.index_boat_pos)
         elif self.which_shore == "left":
             return self.left_shore_pos
         elif self.which_shore == "right":

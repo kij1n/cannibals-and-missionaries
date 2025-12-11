@@ -1,3 +1,8 @@
+"""
+This module contains all the settings and constants for the
+cannibals and missionaries game.
+"""
+
 GAME_STARTED = False
 LOST = False
 
@@ -50,9 +55,7 @@ BOAT_RIGHT_POS = (850 + BOAT_MOVE_RIGHT[0], 444 + BOAT_MOVE_RIGHT[1])
 # rendering entities in the boat
 DIST_FROM_EDGE_OF_BOAT = 0
 DIST_BETWEEN_ENTS_IN_BOAT = 0
-# BOAT_ENTITY_LEFT_POS = (BOAT_LEFT_POS[0] + 20, BOAT_LEFT_POS[1] - 80)
-# BOAT_ENTITY_RIGHT_POS = (BOAT_RIGHT_POS[0] + 20 + DIST_BETWEEN_ENTS_IN_BOAT, BOAT_RIGHT_POS[1] - 80)
-BOAT_ENTITY_POS = lambda boat_pos, index: (
+boat_entity_pos = lambda boat_pos, index: (
     boat_pos[0] + DIST_FROM_EDGE_OF_BOAT + (ENTITY_SPRITE_SCALE[0] / 2 + DIST_BETWEEN_ENTS_IN_BOAT) * index,
     boat_pos[1] - 80
 )
