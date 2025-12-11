@@ -33,12 +33,11 @@ class View:
         """
         Main rendering method called every frame.
         Delegates rendering to specific methods based on the current game action.
-
-        Args:
-            game_state (GameState): The current state of the game (positions, etc.).
-            menu_state (MenuState): The current state of the menu (buttons).
-            action (str): The current game action (e.g., "menu", "listen", "pause").
-            moves_made (int): The number of moves made so far.
+        :param game_state: GameState object containing game data.
+        :param menu_state: MenuState object containing menu button data.
+        :param action: String representing the current game action.
+        :param moves_made: Integer counter for the number of moves made.
+        :return: None
         """
         self.render_background()
 
@@ -56,9 +55,8 @@ class View:
     def render_menu(self, menu_state):
         """
         Renders the main menu screen with a dimmed background.
-
-        Args:
-            menu_state (MenuState): State object containing menu button data.
+        :param menu_state: MenuState object containing menu button data.
+        :return: None
         """
         self.render_dim()
         self.menu_renderer.render_menu(
@@ -71,12 +69,11 @@ class View:
         """
         Renders the active game state, including entities and UI elements.
         Handles rendering for 'listen', 'ferry', 'pause', 'win', and 'lose' actions.
-
-        Args:
-            game_state (GameState): Current game data.
-            menu_state (MenuState): Current menu data (needed for pause menu).
-            action (str): Current action context.
-            moves_made (int): Move counter to display.
+        :param game_state: GameState object containing game data.
+        :param menu_state: MenuState object containing menu button data.
+        :param action: String representing the current game action.
+        :param moves_made: Integer counter for the number of moves made.
+        :return: None
         """
         self.game_renderer.render(game_state, self.screen, self.sprite_loader)
         if action == "pause":
@@ -123,10 +120,9 @@ class View:
     def render_end(self, end: str, moves_made):
         """
         Renders the game over screen (win or lose) with the final move count.
-
-        Args:
-            end (str): "win" or "lose" indicating the outcome.
-            moves_made (int): Total moves made.
+        :param end: String representing the game end condition ("win" or "lose").
+        :param moves_made: Integer counter for the number of moves made.
+        :return: None
         """
         self.render_dim()
 
@@ -175,13 +171,12 @@ class View:
     def display_text(self, text, pos, color, size, font):
         """
         Renders and blits text onto the screen at a specified position.
-
-        Args:
-            text (str): The string to render.
-            pos (tuple): Center coordinates (x, y) for the text.
-            color (tuple/str): Color of the text.
-            size (int): Font size.
-            font (str): Font file path or name.
+        :param text: String of text to be displayed.
+        :param pos: Tuple representing the (x, y) position for the text center.
+        :param color: Color of the text.
+        :param size: Size of the font.
+        :param font: String representing the font file path.
+        :return: None
         """
         py_font = pygame.font.Font(font, size)
         text_surface = py_font.render(text, True, color)
@@ -197,31 +192,30 @@ class MenuRenderer:
         """
         Renders the buttons for the main menu (Start, Rules, Quit).
         """
-        screen = self.show_button(menu_state.buttons["menu_start"], font, screen)
-        screen = self.show_button(menu_state.buttons["menu_rules"], font, screen)
-        screen = self.show_button(menu_state.buttons["menu_quit"], font, screen)
+        self.show_button(menu_state.buttons["menu_start"], font, screen)
+        self.show_button(menu_state.buttons["menu_rules"], font, screen)
+        self.show_button(menu_state.buttons["menu_quit"], font, screen)
 
     def render_pause(self, menu_state, screen, font: pygame.font.Font):
         """
         Renders the buttons for the pause menu (Resume, Quit, Rules).
         """
-        screen = self.show_button(menu_state.buttons["pause_resume"], font, screen)
-        screen = self.show_button(menu_state.buttons["pause_quit"], font, screen)
-        screen = self.show_button(menu_state.buttons["pause_rules"], font, screen)
+        self.show_button(menu_state.buttons["pause_resume"], font, screen)
+        self.show_button(menu_state.buttons["pause_quit"], font, screen)
+        self.show_button(menu_state.buttons["pause_rules"], font, screen)
 
     @staticmethod
     def render_rules(screen, pos, color, size, font, text_height, text_spacing):
         """
         Renders the list of game rules on the screen.
-
-        Args:
-            screen (pygame.Surface): Target surface.
-            pos (tuple): Starting position for the text.
-            color (tuple/str): Text color.
-            size (int): Font size.
-            font (str): Font name.
-            text_height (int): Height of a text line.
-            text_spacing (int): Spacing between lines.
+        :param screen: Pygame screen object.
+        :param pos: Tuple representing the (x, y) position for the text center.
+        :param color: Color of the text.
+        :param size: Size of the font.
+        :param font: String representing the font file path.
+        :param text_height: Height of each line of text.
+        :param text_spacing: Spacing between lines of text.
+        :return: None
         """
         py_font = pygame.font.Font(font, size)
         multiplier = 1
@@ -235,14 +229,10 @@ class MenuRenderer:
     def show_button(btn, button_font, screen):
         """
         Draws a single button with its text onto the screen.
-
-        Args:
-            btn (Button): The button object to render.
-            button_font (pygame.font.Font): Font used for button text.
-            screen (pygame.Surface): Target surface.
-
-        Returns:
-            pygame.Surface: The screen surface with the button drawn.
+        :param btn: Button object representing the button to be rendered.
+        :param button_font: Pygame font object used to render the button text.
+        :param screen: Screen object on which to render the button.
+        :return: None
         """
         pygame.draw.rect(screen, btn.color, btn.get_dimensions())
 
@@ -250,7 +240,6 @@ class MenuRenderer:
         text_box = text_surface.get_rect()
         text_box.center = btn.get_center()
         screen.blit(text_surface, text_box)
-        return screen
 
 class GameRenderer:
     """
@@ -259,6 +248,10 @@ class GameRenderer:
     def render(self, game_state, screen, sprite_loader):
         """
         Orchestrates the rendering of all game entities and the boat.
+        :param game_state: GameState object containing game data.
+        :param screen: Pygame screen object.
+        :param sprite_loader: SpriteLoader object used to load and cache game assets.
+        :return: None
         """
         self.render_entities(game_state, screen, sprite_loader)
 
@@ -268,6 +261,11 @@ class GameRenderer:
     def render_boat(self, boat, screen, sprite_loader, game_state):
         """
         Renders the boat and any entities currently on board.
+        :param boat: Boat object representing the boat to be rendered.
+        :param screen: Pygame screen object.
+        :param sprite_loader: SpriteLoader object used to load and cache game assets.
+        :param game_state: GameState object containing game data.
+        :return: None
         """
         self.render_entity(
             game_state.entities.boat, screen, sprite_loader
@@ -280,6 +278,10 @@ class GameRenderer:
     def render_entities(self, game_state, screen, sprite_loader):
         """
         Renders all entities that are currently on the shores (not on the boat).
+        :param game_state: GameState object containing game data.
+        :param screen: Pygame screen object.
+        :param sprite_loader: SpriteLoader object used to load and cache game assets.
+        :return: None
         """
         for entity in game_state.entities.ents.values():
             if entity.on_boat:
@@ -292,14 +294,13 @@ class GameRenderer:
         """
         Draws a single entity's sprite at its current position.
         Handles scaling differences for entities on the boat vs. on shore.
-
-        Args:
-            entity (Entity): The entity to render.
-            screen (pygame.Surface): Target surface.
-            sprite_loader (SpriteLoader): Source of sprite images.
-            on_boat (bool): Whether the entity is currently on the boat.
-            index (int, optional): Index position on the boat.
-            boat_pos (tuple, optional): Current position of the boat (required if on_boat=True).
+        :param entity: Entity object representing the entity to be rendered.
+        :param screen: Pygame screen object.
+        :param sprite_loader: SpriteLoader object used to load and cache game assets.
+        :param on_boat: (optional) Boolean flag indicating whether the entity is on the boat.
+        :param index: (optional) Integer representing the index of the entity on the boat.
+        :param boat_pos: (optional) Tuple representing the position of the boat (x, y).
+        :return:
         """
         image = sprite_loader.sprites[
             entity.sprite_name[0]
@@ -335,9 +336,6 @@ class SpriteLoader:
     Responsible for loading and caching game assets (sprites) from disk.
     """
     def __init__(self):
-        """
-        Loads all necessary sprites for entities, the boat, and the background upon initialization.
-        """
         self.sprites = {}
         for name in settings.ENTITY_ASSET_PATHS.keys():
             self.sprites[name] = self.load_sprite(
@@ -361,13 +359,9 @@ class SpriteLoader:
     def load_sprite(path, sprite_type):
         """
         Loads an image from a file path, converts it for Pygame, and scales it according to its type.
-
-        Args:
-            path (str): File path to the image.
-            sprite_type (str): Category of the sprite ("entity", "boat", or "background").
-
-        Returns:
-            pygame.Surface: The loaded and scaled image surface.
+        :param path: String of a file path to the image asset.
+        :param sprite_type: String representing the type of sprite being loaded ("entity", "boat", or "background").
+        :return: Pygame Surface object representing the loaded sprite.
         """
         image = pygame.image.load(path)
         image = image.convert_alpha()
