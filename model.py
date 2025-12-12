@@ -153,8 +153,7 @@ class GameState:
         """
         max_missionaries = 3
         max_cannibals = 3
-        gamestate = (max_cannibals, max_missionaries,
-                     0)  # cannibals on the left, missionaries on the left, boat: 0: left 1: right
+
         moves = [
             (1, 0), (2, 0),  # cannibals
             (0, 1), (0, 2),  # missionaries

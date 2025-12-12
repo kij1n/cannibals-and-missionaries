@@ -246,6 +246,7 @@ class Controller:
                 self.action = "win"
             else:
                 self.action = "lose"
+        self.event_handler()
 
     def action_win(self):
         """

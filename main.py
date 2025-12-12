@@ -11,7 +11,7 @@ def main():
     """
     Initializes the MVC components and
     runs the game.
-    :return:
+    :return: None
     """
     model = Model()
     view = View()
